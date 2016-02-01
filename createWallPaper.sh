@@ -1,8 +1,9 @@
 #!/usr/bin/bash
-#Joe_Yue@Joe_Yue ~
+#joetww@gmail.com
 
-
+export LC_ALL=en_US.UTF-8
 $(which chcp.com) 65001 > /dev/null
+
 dir_new=$( cd $(dirname $0) ; pwd -P )
 
 
@@ -76,7 +77,7 @@ content=""
 
 content=${content}$(date)
 eval $($(which wmic) cpu get LoadPercentage /format:list | $(which tr) '\r\n' ' ')
-
+###content=$($(which screenfetch) -n -N -t -p | $(which iconv) -f big5 -t utf-8)
 content=${content}$($(which printf) "${content_format}" "IP" "$($(which ipconfig) | $(which iconv) -f big5 -t utf-8 | $(which grep) -A 5 "區域連線:" | $(which grep) -P 'IPv4 Address.*(\d{1,3}\.){3}\d{1,3}' | $(which awk) '{print $NF}')")
 content=${content}$($(which printf) "${content_format}" "CPU" "$($(which wmic) cpu get name | $(which tr) '\r\n' ' ' | $(which sed) -e 's/^Name\s\+\(.*\)\s\+$/\1/' -e 's/\s\+$//')")
 content=${content}$($(which printf) "${content_format}" "RESOLUTION" ${resolution})
