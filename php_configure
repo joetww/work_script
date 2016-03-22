@@ -1,0 +1,7 @@
+./configure --with-apxs2 --with-kerberos --enable-mod-charset --with-iconv --with-libxml-dir --with-openssl \
+--with-zlib --enable-bcmath --enable-calendar --with-bz2 --with-curl --enable-exif --enable-ftp --with-gd \
+--with-jpeg-dir --with-png-dir --with-zlib-dir --with-freetype-dir --enable-gd-native-ttf \
+--enable-gd-jis-conv --with-gettext --with-mhash --enable-mbstring --with-mcrypt --with-mysql=/usr/local/mysql/lib \
+--enable-embedded-mysqli --enable-pcntl --with-pdo-mysql --enable-shmop --with-snmp --enable-sockets --enable-wddx \
+--with-xmlrpc --with-xsl --enable-zip --with-pear --with-zend-vm=GOTO --enable-phar --with-mysql=mysqlnd --with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd --enable-soap --enable-opcache --with-pdo-pgsql --with-pgsql=/usr/pgsql-9.4/include
