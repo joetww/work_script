@@ -1,0 +1,7 @@
+
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_URI} !/Web_html/.*
+RewriteCond $1 !(.+\.php|forum|resources|robots\.txt)
+RewriteRule (.+)$ /Web_html/$1 [L,QSA]
