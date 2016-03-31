@@ -60,4 +60,11 @@ do
 done
 
 exit 0;
-                                                                             
+################################################
+###### 補充 設定檔 ${HOME}/.mysql_backuprc #####
+################################################
+db_user="lmo_user"
+db_passwd="lmo_user"
+db_host="10.132.206.16"
+backup_dir="/cygdrive/d/mysql_backup"
+keep_backup=7
