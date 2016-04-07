@@ -26,7 +26,7 @@ time="$(date +"%d-%m-%Y")"
 
 # mysql, mysqldump and some other bin's path
 MYSQL="$(which mysql)"
-MYSQLDUMP="$(which mysqldump)"
+MYSQLDUMP="$(which mysqldump) --single-transaction"
 MKDIR="$(which mkdir)"
 RM="$(which rm)"
 MV="$(which mv)"
