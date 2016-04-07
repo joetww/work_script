@@ -21,12 +21,22 @@ if [ -z ${db_host+x} ]; then echo "db_host is unset";exit 4; fi
 if [ -z ${backup_dir+x} ]; then echo "backup_dir is unset";exit 4; fi
 if [ -z ${keep_backup+x} ]; then echo "keep_backup is unset"; exit 4; fi
 
+
+# 修正一些警告訊息
+# It succeeds but stderr will get:
+# Warning: Using a password on the command line interface can be insecure.
+# You can fix this with the below hack:
+credentialsFile="${HOME}/.mysql-credentials.cnf"
+echo "[mysqldump]" > $credentialsFile
+echo "user=$db_user" >> $credentialsFile
+echo "password=$db_passwd" >> $credentialsFile
+
 # date format for backup file (dd-mm-yyyy)
 time="$(date +"%d-%m-%Y")"
 
 # mysql, mysqldump and some other bin's path
-MYSQL="$(which mysql)"
-MYSQLDUMP="$(which mysqldump) --single-transaction"
+MYSQL="$(which mysql) --defaults-extra-file=$credentialsFile -h $db_host"
+MYSQLDUMP="$(which mysqldump) --single-transaction --defaults-extra-file=$credentialsFile --routines -h $db_host"
 MKDIR="$(which mkdir)"
 RM="$(which rm)"
 MV="$(which mv)"
@@ -39,11 +49,11 @@ test ! -w $backup_dir && echo "Error: $backup_dir is un-writeable." && exit 0
 test ! -d "$backup_dir/backup.0/" && $MKDIR "$backup_dir/backup.0/"
 
 # get all databases
-all_db="$($MYSQL -u $db_user -h $db_host -p$db_passwd -Bse 'show databases' | grep -v -P '^information_schema$|^mysql$')"
+all_db="$($MYSQL -Bse 'show databases' | grep -v -P '^information_schema$|^mysql$')"
 
 for db in $all_db
 do
-        $MYSQLDUMP -u $db_user -h $db_host -p$db_passwd $db | $GZIP -9 > "$backup_dir/backup.0/$time.$db.gz"
+        $MYSQLDUMP $db | $GZIP -9 > "$backup_dir/backup.0/$time.$db.gz"
 done
 
 # delete the oldest backup
