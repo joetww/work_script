@@ -27,7 +27,7 @@ if [ -z ${keep_backup+x} ]; then echo "keep_backup is unset"; exit 4; fi
 # Warning: Using a password on the command line interface can be insecure.
 # You can fix this with the below hack:
 credentialsFile="${HOME}/.mysql-credentials.cnf"
-echo "[mysqldump]" > $credentialsFile
+echo "[client]" > $credentialsFile
 echo "user=$db_user" >> $credentialsFile
 echo "password=$db_passwd" >> $credentialsFile
 
