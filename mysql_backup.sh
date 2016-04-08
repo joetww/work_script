@@ -15,28 +15,24 @@ EOD
         exit 2
 fi
 
-if [ -z ${db_user+x} ]; then echo "db_user is unset";exit 4; fi
-if [ -z ${db_passwd+x} ]; then echo "db_passwd is unset";exit 4; fi
-if [ -z ${db_host+x} ]; then echo "db_host is unset";exit 4; fi
+## if [ -z ${db_user+x} ]; then echo "db_user is unset";exit 4; fi
+## if [ -z ${db_passwd+x} ]; then echo "db_passwd is unset";exit 4; fi
+## if [ -z ${db_host+x} ]; then echo "db_host is unset";exit 4; fi
 if [ -z ${backup_dir+x} ]; then echo "backup_dir is unset";exit 4; fi
 if [ -z ${keep_backup+x} ]; then echo "keep_backup is unset"; exit 4; fi
-
-
-# 修正一些警告訊息
-# It succeeds but stderr will get:
-# Warning: Using a password on the command line interface can be insecure.
-# You can fix this with the below hack:
-credentialsFile="${HOME}/.mysql-credentials.cnf"
-echo "[client]" > $credentialsFile
-echo "user=$db_user" >> $credentialsFile
-echo "password=$db_passwd" >> $credentialsFile
 
 # date format for backup file (dd-mm-yyyy)
 time="$(date +"%d-%m-%Y")"
 
+# 預先設定好加密過的帳密檔案
+# http://dev.mysql.com/doc/refman/5.6/en/mysql-config-editor.html
+# mysql_config_editor set --login-path=client --host=localhost --user=localuser --password
+# mysql_config_editor print --all
+# ~/.mylogin.cnf
+
 # mysql, mysqldump and some other bin's path
-MYSQL="$(which mysql) --defaults-extra-file=$credentialsFile -h $db_host"
-MYSQLDUMP="$(which mysqldump) --single-transaction --defaults-extra-file=$credentialsFile --routines -h $db_host"
+MYSQL="$(which mysql) --login-path=client -h $db_host"
+MYSQLDUMP="$(which mysqldump) --login-path=client --single-transaction --routines -h $db_host"
 MKDIR="$(which mkdir)"
 RM="$(which rm)"
 MV="$(which mv)"
