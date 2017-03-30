@@ -9,9 +9,9 @@ FROM
         FROM
         (
                 SELECT WorkerNo, STATUS, CONVERT(char(10), StartTimeLoca, 20) as QueryDay, StartTimeLoca, EndTimeLoca
-                FROM [callcenterdb].[dbo].[tbseatstatus]
+                FROM tbseatstatus
                 WHERE StartTimeLoca between '2017/03/01 00:00:00' AND '2017/03/31 23:59:59' AND
-                ( [STATUS] = '1'  )
+                ( STATUS = '1'  )
         )       as t
         GROUP BY t.WorkerNo, t.QueryDay
 ) as q1
