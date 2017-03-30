@@ -5,44 +5,44 @@ SELECT
         q3.CallIn, q3.CallInTime, q3.CallOut, q3.CallOutTime
 FROM
 (
-        Select t.WorkerNo, t.QueryDay, convert(char(19), Min(t.StartTimeLoca), 120) as SeatOnTime,  convert(char(19), Max(t.EndTimeLoca), 120) as SeatOffTime
-        from
+        SELECT t.WorkerNo, t.QueryDay, CONVERT(char(19), MIN(t.StartTimeLoca), 120) as SeatOnTime,  CONVERT(char(19), MAX(t.EndTimeLoca), 120) as SeatOffTime
+        FROM
         (
-                select WorkerNo, STATUS, convert(char(10), StartTimeLoca, 20) as QueryDay, StartTimeLoca, EndTimeLoca
-                from [callcenterdb].[dbo].[tbseatstatus]
-                where StartTimeLoca between '2017/03/01 00:00:00' and '2017/03/31 23:59:59' and
+                SELECT WorkerNo, STATUS, CONVERT(char(10), StartTimeLoca, 20) as QueryDay, StartTimeLoca, EndTimeLoca
+                FROM [callcenterdb].[dbo].[tbseatstatus]
+                WHERE StartTimeLoca between '2017/03/01 00:00:00' AND '2017/03/31 23:59:59' AND
                 ( [STATUS] = '1'  )
         )       as t
-        group by t.WorkerNo, t.QueryDay
+        GROUP BY t.WorkerNo, t.QueryDay
 ) as q1
-join
+JOIN
 (
-        select s.WorkerNo, s.Calltime,
-                        sum(case when STATUS = 1 then Duration else 0 end) as values_1,
-                        sum(case when STATUS = 2 then Duration else 0 end) as values_2,
-                        sum(case when STATUS = 3 then Duration else 0 end) as values_3,
-                        sum(case when STATUS = 10 and flag = 1 then Duration else 0 end) as values_10_1,
-                        sum(case when STATUS = 10 and flag = 3 then Duration else 0 end) as values_10_3,
-                        sum(case when STATUS = 10 and flag = 4 then Duration else 0 end) as values_10_4,
-                        sum(case when STATUS = 10 and flag = 5 then Duration else 0 end) as values_10_5,
-                        sum(case when STATUS = 7 then Duration else 0 end) as values_7,
-                        sum(case when STATUS = 9 then Duration else 0 end) as values_9,
-                        sum(case when STATUS = 16 then Duration else 0 end) as values_16         
-        from
+        SELECT s.WorkerNo, s.Calltime,
+                        SUM(case when STATUS = 1 then Duration else 0 end) as values_1,
+                        SUM(case when STATUS = 2 then Duration else 0 end) as values_2,
+                        SUM(case when STATUS = 3 then Duration else 0 end) as values_3,
+                        SUM(case when STATUS = 10 AND flag = 1 then Duration else 0 end) as values_10_1,
+                        SUM(case when STATUS = 10 AND flag = 3 then Duration else 0 end) as values_10_3,
+                        SUM(case when STATUS = 10 AND flag = 4 then Duration else 0 end) as values_10_4,
+                        SUM(case when STATUS = 10 AND flag = 5 then Duration else 0 end) as values_10_5,
+                        SUM(case when STATUS = 7 then Duration else 0 end) as values_7,
+                        SUM(case when STATUS = 9 then Duration else 0 end) as values_9,
+                        SUM(case when STATUS = 16 then Duration else 0 end) as values_16        
+        FROM
         (
-        select Duration, WorkerNo, STATUS, Flag, CONVERT(char(10), StartTimeLoca, 20) as CallTime
-                from tbSeatStatus
-                where StartTimeLoca between '2017/03/01 00:00:00' and '2017/03/31 23:59:59'
+        SELECT Duration, WorkerNo, STATUS, Flag, CONVERT(char(10), StartTimeLoca, 20) as CallTime
+                FROM tbSeatStatus
+                WHERE StartTimeLoca between '2017/03/01 00:00:00' AND '2017/03/31 23:59:59'
         ) as s
-        group by s.CallTime, s.WorkerNo
+        GROUP BY s.CallTime, s.WorkerNo
 ) as q2
-on q1.WorkerNo = q2.WorkerNo and q1.QueryDay = q2.CallTime
-join
+on q1.WorkerNo = q2.WorkerNo AND q1.QueryDay = q2.CallTime
+JOIN
 (
-        select WorkerNo, WorkerName from tbworker
+        SELECT WorkerNo, WorkerName FROM tbworker
 ) as q4
 on q1.WorkerNo = q4.WorkerNo
-inner join
+inner JOIN
 (
         SELECT
                 u.CallDay,
@@ -51,22 +51,22 @@ inner join
                 SUM(case when CallInOut = 1 then u.DiffTime else 0 end) as CallInTime,
                 SUM(case when CallInOut = 2 then 1 else 0 end) as CallOut,
                 SUM(case when CallInOut = 2 then u.DiffTime else 0 end) as CallOutTime
-        from
+        FROM
         (
-                select
+                SELECT
                         CONVERT(char(10), CallTime, 20) as CallDay,
                         WorkerNo,
                         CallInOut,
                         SeatAnsId,
                         Datediff(Second, SeatAnsTime, RelTime) as DiffTime
-                from
+                FROM
                         tbcallcdr
-                where
-                        CallTime between '2017/03/01 00:00:00' and '2017/03/31 23:59:59'
-                        and SrvType <> 255
-                        and SeatAnsId = 1 and WorkerNo <> ''
+                WHERE
+                        CallTime between '2017/03/01 00:00:00' AND '2017/03/31 23:59:59'
+                        AND SrvType <> 255
+                        AND SeatAnsId = 1 AND WorkerNo <> ''
         ) as u
-        group by u.CallDay, u.WorkerNo
+        GROUP BY u.CallDay, u.WorkerNo
 ) as q3
-on q1.WorkerNo = q3.WorkerNo and q1.QueryDay = q3.CallDay
-order by q1.QueryDay, q1.WorkerNo
+on q1.WorkerNo = q3.WorkerNo AND q1.QueryDay = q3.CallDay
+ORDER BY q1.QueryDay, q1.WorkerNo
