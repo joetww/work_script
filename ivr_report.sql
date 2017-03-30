@@ -5,7 +5,9 @@ SELECT
         q3.CallIn, q3.CallInTime, q3.CallOut, q3.CallOutTime
 FROM
 (
-        Select t.WorkerNo, t.QueryDay, convert(char(19), Min(t.StartTimeLoca), 120) as SeatOnTime,  convert(char(19), Max(t.EndTimeLoca), 120) as SeatOffTime
+        Select t.WorkerNo, t.QueryDay,
+        convert(char(19), Min(t.StartTimeLoca), 120) as SeatOnTime,
+        convert(char(19), Max(t.EndTimeLoca), 120) as SeatOffTime
         from
         (
                 select WorkerNo, STATUS, convert(char(10), StartTimeLoca, 20) as QueryDay, StartTimeLoca, EndTimeLoca
@@ -69,4 +71,4 @@ join
         select WorkerNo, WorkerName from tbworker
 ) as q4
 on q1.WorkerNo = q4.WorkerNo
-order by q1.QueryDay, q1.WorkerNo
+order by q1.QueryDay, q1.WorkerNo;
