@@ -63,8 +63,9 @@ java -jar vendor/bin/selenium-server-standalone-2.53.1.jar -Dwebdriver.firefox.b
 export DISPLAY=:2
 ./chromedriver
 
-#不特別帶chrome參數
-java -jar /home/geoyue/下載/selenium-server-standane-2.53.1.jar
+#不用特別帶firefox參數，但是帶了也沒事
+export DISPLAY=:2
+java -jar vendor/bin/selenium-server-standalone-2.53.1.jar -Dwebdriver.firefox.bin="~/old_firefox/firefox_47.0.1/firefox"
 
 <?php
         namespace Facebook\WebDriver;
