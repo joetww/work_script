@@ -28,7 +28,7 @@
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel \
-freetype-devel openldap-devel cmake
+freetype-devel openldap-devel cmake expect
 
 #############################################
 export WORKHOME=~/work/
@@ -40,7 +40,7 @@ wget -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcry
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
-make && sudo make install clean
+make && sudo make install
 #############################################
 #安裝libmemcached-1.0.18
 cd $WORKHOME
@@ -48,7 +48,7 @@ wget -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-make && sudo make install clean
+make && sudo make install
 #############################################
 #安裝libpg
 cd $WORKHOME
@@ -56,7 +56,7 @@ wget -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
 tar zxvf postgresql-9.6.3.tar.gz
 cd postgresql-9.6.3 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
-make && sudo make install clean
+make && sudo make install
 #############################################
 #編譯ruby 2.4.1
 cd $WORKHOME
@@ -64,7 +64,7 @@ wget -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
-make && sudo make install clean
+make && sudo make install
 
 #加入ruby的路徑
 [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
@@ -99,7 +99,7 @@ sudo "PATH=$PATH" \
 #漫長的等待......
 
 #檢查安裝正確不正確
-sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/passenger-config validate-install
+#sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/passenger-config validate-install
 
 #若要使用passenger，則nginx.conf必須加入以下設定
 #       http {
@@ -132,12 +132,12 @@ cut -d : -f 2-`
 ./configure  --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #這是動態模組
 #./configure  --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
-#make && sudo make install clean
+#make && sudo make install
 
 #############################################
 #若是以後想要單獨編譯動態模組
 #重新跑一次configure，因為make clean會把Makefile清除
-#make modules && sudo make install clean
+#make modules && sudo make install
 
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
@@ -149,7 +149,7 @@ tar zxvf percona-server-5.6.36-82.0.tar.gz
 cd percona-server-5.6.36-82.0
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
-make && sudo make install clean
+make && sudo make install
 #############################################
 #更新ldconfig
 sudo bash -c "cat >> /etc/ld.so.conf.d/local.conf" <<EOD
@@ -165,7 +165,7 @@ PHP_VERSION=`curl -s http://php.net/downloads.php | \
 grep -P '<h3 id="v5\.6\.\d+" class="title">' | \
 sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
 PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
-wget -N http://tw1.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
+wget http://tw1.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
 -O php-$PHP_VERSION.tar.gz && \
 tar zxvf php-$PHP_VERSION.tar.gz && \
 cd php-$PHP_VERSION && \
@@ -182,7 +182,7 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --enable-soap --without-pear && \
-make && sudo make install clean
+make && sudo make install
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
@@ -190,21 +190,44 @@ test \! -f $PHP_PATH/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 $PHP_PATH/etc/php.ini
 
-(
+/usr/local/webserver/php5_6_30/bin/pear version || (
 #安裝pear
 cd $WORKHOME/ && \
 wget -N http://pear.php.net/go-pear.phar && \
-sudo $PHP_PATH/bin/php go-pear.phar 
+sudo expect << EOD
+spawn $PHP_PATH/bin/php go-pear.phar
+expect "or Enter to continue:"
+send "\r"
+expect "Would you like to alter php.ini"
+send "\r"
+expect "Press Enter to continue:"
+send "\r"
+expect eof
+EOD
+)
+
 #會修改 include_path 要跟著修改
-) ; (
+
 #############################################
 #安裝php-memcache
-sudo $PHP_PATH/bin/pecl install memcache
-) ; (
+sudo expect << EOD
+spawn $PHP_PATH/bin/pecl install memcache
+expect "Enable memcache session handler support"
+send "\r"
+expect eof
+EOD
+
+
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
-sudo $PHP_PATH/bin/pecl install memcached-2.2.0
-) ; (
+sudo expect << EOD
+$PHP_PATH/bin/pecl install memcached-2.2.0
+expect "libmemcached directory"
+send "\r"
+expec eof
+EOD
+
+
 #############################################
 #安裝php-pgsql
 cd $WORKHOME/php-$PHP_VERSION/ext/pgsql
@@ -212,9 +235,9 @@ $PHP_PATH/bin/phpize && \
 ./configure \
 --with-php-config=$PHP_PATH/bin/php-config \
 --with-pgsql=/usr/local/webserver/pgsql && \
-make && sudo make install clean
+make && sudo make install
 #############################################
-)
+
 
 
 #打包
