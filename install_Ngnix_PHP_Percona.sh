@@ -1,5 +1,5 @@
 ### Nginx+PHP+Percona編譯流程 ###
- 
+### wget -q https://raw.githubusercontent.com/joetww/work_script/master/install_Ngnix_PHP_Percona.sh -O - | bash
 #版本：
 #	nginx-1.13.2
 #	ruby-2.4.1
@@ -40,7 +40,7 @@ wget -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcry
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 #安裝libmemcached-1.0.18
 cd $WORKHOME
@@ -48,7 +48,7 @@ wget -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 #安裝libpg
 cd $WORKHOME
@@ -56,7 +56,7 @@ wget -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
 tar zxvf postgresql-9.6.3.tar.gz
 cd postgresql-9.6.3 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 #編譯ruby 2.4.1
 cd $WORKHOME
@@ -64,7 +64,7 @@ wget -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
-make && sudo make install
+make && sudo make install clean
 
 #加入ruby的路徑
 [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
@@ -133,12 +133,12 @@ cut -d : -f 2-`
 ./configure  --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #這是動態模組
 #./configure  --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
-#make && sudo make install
+#make && sudo make install clean
 
 #############################################
 #若是以後想要單獨編譯動態模組
 #重新跑一次configure，因為make clean會把Makefile清除
-#make modules && sudo make install
+#make modules && sudo make install clean
 
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
@@ -150,7 +150,7 @@ tar zxvf percona-server-5.6.36-82.0.tar.gz
 cd percona-server-5.6.36-82.0
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 #更新ldconfig
 sudo bash -c "cat >> /etc/ld.so.conf.d/local.conf" <<EOD
@@ -183,7 +183,7 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --enable-soap --without-pear && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
@@ -236,7 +236,7 @@ $PHP_PATH/bin/phpize && \
 ./configure \
 --with-php-config=$PHP_PATH/bin/php-config \
 --with-pgsql=/usr/local/webserver/pgsql && \
-make && sudo make install
+make && sudo make install clean
 #############################################
 
 
