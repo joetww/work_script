@@ -169,7 +169,9 @@ cd php-$PHP_VERSION
 --enable-zip --enable-soap --without-pear && \
 make && sudo make install clean
 #############################################
-#先弄個預設的php.ini
+#假如不存在php.ini的話
+#先弄個預設的
+test \! -f $PHP_PATH/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 $PHP_PATH/etc/php.ini
 
@@ -224,6 +226,6 @@ sudo tar -zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
 #若是要用pear，之後若是不需要，則可以略過，目前僅用在安裝pecl-memcache & pecl-memcached
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 
-sudo tar -zcvf /tmp/php_`date +%Y%m%d-%H`.tgz \
+sudo tar -zcvf /tmp/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
 --exclude='./webserver/php_5_6_*/etc/*' \
 -C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`
