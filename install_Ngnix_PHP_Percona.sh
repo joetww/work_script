@@ -197,19 +197,23 @@ make && sudo make install clean
 #############################################
 
 
-#############################################
-#打包，放在/tmp底下(注意空間大小)
-#nginx/conf nginx/html nginx/logs 這三個目錄不打包
-#mysql&php也排除打包在這包，獨立成為自己一包
- 
-sudo tar --exclude='*.old' --exclude='./webserver/nginx/conf/*' \
---exclude='./webserver/nginx/html/*' \
---exclude='./webserver/nginx/logs/*' \
+#打包
+
+sudo tar  \
+--exclude='./webserver/nginx' \
 --exclude='./webserver/mysql' \
 --exclude='./webserver/php*' \
 --exclude='./webserver/pgsql' \
--zcvf /tmp/webserver_`date +%Y%m%d-%H`.tgz \
+-zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ .
+
+#nginx的打包
+sudo tar --exclude='*.old' \
+--exclude='./webserver/nginx/conf/*' \
+--exclude='./webserver/nginx/html/*' \
+--exclude='./webserver/nginx/logs/*' \
+-zcvf /tmp/nginx_`date +%Y%m%d-%H`.tgz \
+-C /usr/local/ ./webserver/nginx
 #############################################
 #mysql的打包
 #預設的mysql設定檔位置
