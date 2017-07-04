@@ -225,5 +225,5 @@ sudo tar -zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 
 sudo tar -zcvf /tmp/php_`date +%Y%m%d-%H`.tgz \
---exclude='./webserver/php_5_6_30/etc/*' \
--C /usr/local/ ./webserver/php*
+--exclude='./webserver/php_5_6_*/etc/*' \
+-C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`
