@@ -80,8 +80,9 @@ sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #先抓好nginx source code
 cd $WORKHOME
 wget -N https://nginx.org/download/nginx-1.13.2.tar.gz
-tar zxvf nginx-1.13.2.tar.gz
-cd nginx-1.13.2
+tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V`
+NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
+cd $NGINX_SOURCE
 #############################################
 #這裡先跳去準備安裝passenger，等一下會順便裝好nginx
 cd $WORKHOME #其實不在乎在哪裡執行，只是一致一些
@@ -92,7 +93,7 @@ sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/gem install passenger --no-rdoc 
 sudo "PATH=$PATH" \
 /usr/local/webserver/ruby/bin/passenger-install-nginx-module \
 --prefix=/usr/local/webserver/nginx \
---nginx-source-dir=/home/geoyue/work/nginx-1.13.2 \
+--nginx-source-dir=$NGINX_SOURCE \
 --languages ruby,python,nodejs \
 --auto
 
@@ -221,7 +222,7 @@ EOD
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
 sudo expect << EOD
-$PHP_PATH/bin/pecl install memcached-2.2.0
+spawn $PHP_PATH/bin/pecl install memcached-2.2.0
 expect "libmemcached directory"
 send "\r"
 expec eof
