@@ -12,7 +12,10 @@
 #       php-memcached-2.2.0
 #注意：
 #	WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
-
+#秘訣：
+#       sudo 可以設定延長session timeout
+#       sudo visudo
+#       修改 Defaults        env_reset,timestamp_timeout=30
 
 #先說好，我不習慣直接用root做事情，所以會先用一個一般帳號處理大多數要處理的事情
 #有需要時候再用sudo進行提昇權限的動作，
