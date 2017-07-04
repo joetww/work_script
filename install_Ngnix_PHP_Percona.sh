@@ -63,15 +63,19 @@ cd $WORKHOME
 wget -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
-./configure --prefix=/usr/local && \
+./configure --prefix=/usr/local/webserver/ruby && \
 make && sudo make install clean
+
+#加入ruby的路徑
+[[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
+
 #############################################
 #安裝rubygems
 cd $WORKHOME
 wget -N https://rubygems.org/rubygems/rubygems-2.6.12.tgz
 tar zxvf rubygems-2.6.12.tgz
 cd rubygems-2.6.12
-sudo /usr/local/bin/ruby setup.rb
+sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #############################################
 #先抓好nginx source code
 cd $WORKHOME
@@ -82,11 +86,11 @@ cd nginx-1.13.2
 #這裡先跳去準備安裝passenger，等一下會順便裝好nginx
 cd $WORKHOME #其實不在乎在哪裡執行，只是一致一些
 #安裝passenger
-sudo /usr/local/bin/gem install passenger --no-rdoc --no-ri
+sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/gem install passenger --no-rdoc --no-ri
 #############################################
 #用passenger-install-nginx-modul安裝nginx & nginx module
 sudo "PATH=$PATH" \
-/usr/local/bin/passenger-install-nginx-module \
+/usr/local/webserver/ruby/bin/passenger-install-nginx-module \
 --prefix=/usr/local/webserver/nginx \
 --nginx-source-dir=/home/geoyue/work/nginx-1.13.2 \
 --languages ruby,python,nodejs \
@@ -95,7 +99,7 @@ sudo "PATH=$PATH" \
 #漫長的等待......
 
 #檢查安裝正確不正確
-sudo "PATH=$PATH" /usr/local/bin/passenger-config validate-install
+sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/passenger-config validate-install
 #############################################
 #追加naxsi
 cd $WORKHOME
@@ -204,6 +208,7 @@ sudo tar  \
 --exclude='./webserver/mysql' \
 --exclude='./webserver/php*' \
 --exclude='./webserver/pgsql' \
+--exclude='./webserver/ruby' \
 -zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ .
 
@@ -213,7 +218,7 @@ sudo tar --exclude='*.old' \
 --exclude='./webserver/nginx/html/*' \
 --exclude='./webserver/nginx/logs/*' \
 -zcvf /tmp/nginx_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/nginx
+-C /usr/local/ ./webserver/nginx ./webserver/ruby
 #############################################
 #mysql的打包
 #預設的mysql設定檔位置
