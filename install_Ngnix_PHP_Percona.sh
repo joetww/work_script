@@ -100,14 +100,25 @@ sudo "PATH=$PATH" \
 
 #檢查安裝正確不正確
 sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/passenger-config validate-install
+
+#若要使用passenger，則nginx.conf必須加入以下設定
+#       http {
+#               ...
+#               passenger_root /usr/local/webserver/ruby/lib/ruby/gems/2.4.0/gems/passenger-5.1.5;
+#               passenger_ruby /usr/local/webserver/ruby/bin/ruby;
+#               ...
+#       }
+
+
+
 #############################################
 #追加naxsi
-cd $WORKHOME
-wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz
-tar zxvf 0.55.3.tar.gz
-cd naxsi-0.55.3
-NAXSI_PATH=`pwd`
-cd $WORKHOME/nginx-1.13.2
+cd $WORKHOME && \
+wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz && \
+tar zxvf 0.55.3.tar.gz && \
+cd naxsi-0.55.3 && \
+NAXSI_PATH=`pwd` && \
+cd $WORKHOME/nginx-1.13.2 && \
 #若是之前是用passenger編譯出來的，裡面部份檔案權限會是root，記得修改
 test `stat -c %U Makefile` == "root" && \
 sudo chown -R `stat -c "%U:%G" README` ./
@@ -149,15 +160,15 @@ EOD
 sudo ldconfig -v
 #############################################
 #安裝PHP 5.6.x
-cd $WORKHOME
+cd $WORKHOME && \
 PHP_VERSION=`curl -s http://php.net/downloads.php | \
 grep -P '<h3 id="v5\.6\.\d+" class="title">' | \
 sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
 PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
 wget -N http://tw1.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
--O php-$PHP_VERSION.tar.gz
-tar zxvf php-$PHP_VERSION.tar.gz
-cd php-$PHP_VERSION
+-O php-$PHP_VERSION.tar.gz && \
+tar zxvf php-$PHP_VERSION.tar.gz && \
+cd php-$PHP_VERSION && \
 ./configure \
 --prefix=$PHP_PATH \
 --with-config-file-path=$PHP_PATH/etc \
@@ -179,17 +190,21 @@ test \! -f $PHP_PATH/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 $PHP_PATH/etc/php.ini
 
+(
 #安裝pear
-cd $WORKHOME/
-wget -N http://pear.php.net/go-pear.phar
-sudo $PHP_PATH/bin/php go-pear.phar
+cd $WORKHOME/ && \
+wget -N http://pear.php.net/go-pear.phar && \
+sudo $PHP_PATH/bin/php go-pear.phar 
 #會修改 include_path 要跟著修改
+) ; (
 #############################################
 #安裝php-memcache
 sudo $PHP_PATH/bin/pecl install memcache
+) ; (
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
 sudo $PHP_PATH/bin/pecl install memcached-2.2.0
+) ; (
 #############################################
 #安裝php-pgsql
 cd $WORKHOME/php-$PHP_VERSION/ext/pgsql
@@ -199,6 +214,7 @@ $PHP_PATH/bin/phpize && \
 --with-pgsql=/usr/local/webserver/pgsql && \
 make && sudo make install clean
 #############################################
+)
 
 
 #打包
