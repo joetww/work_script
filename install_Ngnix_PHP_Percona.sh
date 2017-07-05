@@ -31,11 +31,42 @@ readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel \
 freetype-devel openldap-devel cmake expect
 
 #############################################
-export WORKHOME=~/work/
-mkdir -p $WORKHOME
+function addString {
+        test -f $1 && 
+        (
+        grep -Fxq $2 $1 || sudo bash -c "cat >> $1" <<EOD
+date "+#Add By `whoami` at %Y-%m-%d %H:%M:%S"
+$2
+EOD
+        ) || (
+        sudo bash -c "cat >> $1" <<EOD
+date "+#Add By `whoami` at %Y-%m-%d %H:%M:%S"
+$2
+EOD
+)
+}
+
+function makeEnv {
+        WORKHOME=~/work/
+        NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
+        PHP_VERSION=`curl -s http://php.net/downloads.php | \
+        grep -P '<h3 id="v5\.6\.\d+" class="title">' | \
+        sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
+        PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
+        mkdir -p $WORKHOME
+        #加入ruby的路徑
+        test -d /usr/local/webserver/ruby/bin && (
+        [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
+        )
+        addString /etc/ld.so.conf.d/local.conf "/usr/local/lib"
+        addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/mysql/lib"
+        sudo ldconfig
+}
+
 #############################################
 #安裝libmcrypt 2.5.8
-cd $WORKHOME
+makeEnv
+cd $WORKHOME 
 wget -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
@@ -43,6 +74,7 @@ cd libmcrypt-2.5.8
 make && sudo make install clean
 #############################################
 #安裝libmemcached-1.0.18
+makeEnv
 cd $WORKHOME
 wget -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
 tar zxvf libmemcached-1.0.18.tar.gz
@@ -51,6 +83,7 @@ cd libmemcached-1.0.18 && \
 make && sudo make install clean
 #############################################
 #安裝libpg
+makeEnv
 cd $WORKHOME
 wget -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
 tar zxvf postgresql-9.6.3.tar.gz
@@ -59,6 +92,7 @@ cd postgresql-9.6.3 && \
 make && sudo make install clean
 #############################################
 #編譯ruby 2.4.1
+makeEnv
 cd $WORKHOME
 wget -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
 tar zxvf ruby-2.4.1.tar.gz
@@ -66,11 +100,9 @@ cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
 make && sudo make install clean
 
-#加入ruby的路徑
-[[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
-
 #############################################
 #安裝rubygems
+makeEnv
 cd $WORKHOME
 wget -N https://rubygems.org/rubygems/rubygems-2.6.12.tgz
 tar zxvf rubygems-2.6.12.tgz
@@ -78,6 +110,7 @@ cd rubygems-2.6.12
 sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #############################################
 #先抓好nginx source code
+makeEnv
 cd $WORKHOME
 wget -N https://nginx.org/download/nginx-1.13.2.tar.gz
 tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V`
@@ -85,11 +118,14 @@ NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n
 cd $NGINX_SOURCE
 #############################################
 #這裡先跳去準備安裝passenger，等一下會順便裝好nginx
+makeEnv
 cd $WORKHOME #其實不在乎在哪裡執行，只是一致一些
 #安裝passenger
+makeEnv
 sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/gem install passenger --no-rdoc --no-ri
 #############################################
 #用passenger-install-nginx-modul安裝nginx & nginx module
+makeEnv
 sudo "PATH=$PATH" \
 /usr/local/webserver/ruby/bin/passenger-install-nginx-module \
 --prefix=/usr/local/webserver/nginx \
@@ -100,6 +136,7 @@ sudo "PATH=$PATH" \
 #漫長的等待......
 
 #檢查安裝正確不正確
+#makeEnv
 #sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/passenger-config validate-install
 
 #若要使用passenger，則nginx.conf必須加入以下設定
@@ -114,6 +151,7 @@ sudo "PATH=$PATH" \
 
 #############################################
 #追加naxsi
+makeEnv
 cd $WORKHOME && \
 wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz && \
 tar zxvf 0.55.3.tar.gz && \
@@ -130,20 +168,22 @@ CONFIG_ARG=`/usr/local/webserver/nginx/sbin/nginx -V 2>&1 | \
 grep 'configure arguments:' | \
 sed -r 's/--add(-dynamic){0,1}-module=[^ ]*\/naxsi-[^ ]*\/naxsi_src//g' | \
 cut -d : -f 2-`
-./configure  --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
+./configure --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #這是動態模組
-#./configure  --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
+#./configure --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #make && sudo make install clean
 
 #############################################
 #若是以後想要單獨編譯動態模組
 #重新跑一次configure，因為make clean會把Makefile清除
+#makeEnv
 #make modules && sudo make install clean
 
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
 #############################################
 #安裝mysql(其實是安裝其分枝 percona)
+makeEnv
 cd $WORKHOME
 wget -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.0/source/tarball/percona-server-5.6.36-82.0.tar.gz
 tar zxvf percona-server-5.6.36-82.0.tar.gz
@@ -151,21 +191,11 @@ cd percona-server-5.6.36-82.0
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
 make && sudo make install clean
-#############################################
-#更新ldconfig
-sudo bash -c "cat >> /etc/ld.so.conf.d/local.conf" <<EOD
-/usr/local/lib
-/usr/local/webserver/mysql/lib
-EOD
 
-sudo ldconfig -v
 #############################################
 #安裝PHP 5.6.x
+makeEnv
 cd $WORKHOME && \
-PHP_VERSION=`curl -s http://php.net/downloads.php | \
-grep -P '<h3 id="v5\.6\.\d+" class="title">' | \
-sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
-PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
 wget http://tw1.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
 -O php-$PHP_VERSION.tar.gz && \
 tar zxvf php-$PHP_VERSION.tar.gz && \
@@ -187,12 +217,14 @@ make && sudo make install clean
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
+makeEnv
 test \! -f $PHP_PATH/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 $PHP_PATH/etc/php.ini
 
 /usr/local/webserver/php5_6_30/bin/pear version || (
 #安裝pear
+makeEnv
 cd $WORKHOME/ && \
 wget -N http://pear.php.net/go-pear.phar && \
 sudo expect << EOD
@@ -211,6 +243,7 @@ EOD
 
 #############################################
 #安裝php-memcache
+makeEnv
 sudo expect << EOD
 spawn $PHP_PATH/bin/pecl install memcache
 expect "Enable memcache session handler support"
@@ -221,16 +254,18 @@ EOD
 
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
+makeEnv
 sudo expect << EOD
 spawn $PHP_PATH/bin/pecl install memcached-2.2.0
 expect "libmemcached directory"
 send "\r"
-expec eof
+expect eof
 EOD
 
 
 #############################################
 #安裝php-pgsql
+makeEnv
 cd $WORKHOME/php-$PHP_VERSION/ext/pgsql
 $PHP_PATH/bin/phpize && \
 ./configure \
@@ -242,7 +277,7 @@ make && sudo make install clean
 
 
 #打包
-
+makeEnv
 sudo tar  \
 --exclude='./webserver/nginx' \
 --exclude='./webserver/mysql' \
@@ -252,7 +287,9 @@ sudo tar  \
 -zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ .
 
+
 #nginx的打包
+makeEnv
 sudo tar --exclude='*.old' \
 --exclude='./webserver/nginx/conf/*' \
 --exclude='./webserver/nginx/html/*' \
@@ -274,7 +311,7 @@ sudo tar -zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
 #php.ini要確認pear的路徑 include_path=".:/usr/local/webserver/php5_6_30/share/pear"
 #若是要用pear，之後若是不需要，則可以略過，目前僅用在安裝pecl-memcache & pecl-memcached
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
-
+makeEnv
 sudo tar -zcvf /tmp/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
 --exclude='./webserver/php_5_6_*/etc/*' \
 -C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`
