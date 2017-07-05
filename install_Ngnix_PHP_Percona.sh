@@ -49,6 +49,7 @@ EOD
 function makeEnv {
         WORKHOME=~/work/
         NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
+        test -z ${PHP_VERSION+x} && echo "SET PHP_VERSION" && \
         PHP_VERSION=`curl -s http://php.net/downloads.php | \
         grep -P '<h3 id="v5\.6\.\d+" class="title">' | \
         sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
