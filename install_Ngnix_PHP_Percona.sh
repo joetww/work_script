@@ -201,8 +201,14 @@ make && sudo make install clean
 #安裝PHP 5.6.x
 makeEnv
 cd $WORKHOME && \
-wget http://www.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
--O php-$PHP_VERSION.tar.gz && \
+(
+        wget http://tw1.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
+                -O php-$PHP_VERSION.tar.gz --timeout=3 -t 1 || \
+        wget http://us2.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
+                -O php-$PHP_VERSION.tar.gz --timeout=3 -t 1 || \
+        wget http://sg2.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
+                -O php-$PHP_VERSION.tar.gz --timeout=3 -t 1
+) && \
 tar zxvf php-$PHP_VERSION.tar.gz && \
 cd php-$PHP_VERSION && \
 ./configure \
