@@ -119,7 +119,7 @@ wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz && \
 tar zxvf 0.55.3.tar.gz && \
 cd naxsi-0.55.3 && \
 NAXSI_PATH=`pwd` && \
-cd $WORKHOME/nginx-1.13.2 && \
+cd $NGINX_SOURCE && \
 #若是之前是用passenger編譯出來的，裡面部份檔案權限會是root，記得修改
 test `stat -c %U Makefile` == "root" && \
 sudo chown -R `stat -c "%U:%G" README` ./
