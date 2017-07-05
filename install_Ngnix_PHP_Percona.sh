@@ -58,6 +58,10 @@ function makeEnv {
         test -d /usr/local/webserver/ruby/bin && (
         [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
         )
+        #加入php的路徑
+        test -d $PHP_PATH/bin && (
+        [[ ":$PATH:" != *":$PHP_PATH/bin:"* ]] && PATH="$PHP_PATH/bin:${PATH}"
+        )
         addString /etc/ld.so.conf.d/local.conf "/usr/local/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/mysql/lib"
         sudo ldconfig
