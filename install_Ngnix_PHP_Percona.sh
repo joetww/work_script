@@ -12,7 +12,9 @@
 #        postgresql-9.6.3
 #        percona-server-5.6.36-82.0(mysql)
 #        php 5.6.30
+#        php-memcache-2.2.7
 #        php-memcached-2.2.0
+#        php-gearman-1.1.2
 #        re2c 0.16
 #注意：
 #        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
@@ -298,7 +300,6 @@ send "\r"
 expect eof
 EOD
 
-
 #############################################
 #安裝php-pgsql
 makeEnv
@@ -308,6 +309,7 @@ $PHP_PATH/bin/phpize && \
 --with-php-config=$PHP_PATH/bin/php-config \
 --with-pgsql=/usr/local/webserver/pgsql && \
 make && sudo make install clean
+
 #############################################
 #安裝gearmand 
 makeEnv
@@ -319,9 +321,14 @@ cd gearmand-1.1.16 && \
         --with-mysql=/usr/local/webserver/mysql/bin/mysql_config \
         --with-postgresql=/usr/local/webserver/pgsql/bin/pg_config && \
 make && sudo make install clean
+#############################################
+#安裝php-gearman
+sudo "PATH=$PATH" \
+bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
+        export GEARMAN_INC_DIR=/usr/local/webserver/gearmand/include && \
+        /usr/local/webserver/php5_6_30/bin/pecl install gearman"
 
 #############################################
-
 
 #打包
 makeEnv
