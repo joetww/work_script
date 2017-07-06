@@ -2,20 +2,20 @@
 ### wget -q https://raw.githubusercontent.com/joetww/work_script/master/install_Ngnix_PHP_Percona.sh -O - | bash
 #版本：
 #        nginx-1.13.2
-#        ruby-2.4.1
+#        ruby-2.4.1(passenger所需)
 #        rubygems-2.6.12
 #        naxsi-0.55.3
 #        passenger-5.1.5
-#        libmcrypt-2.5.8
+#        libmcrypt-2.5.8(mysql所需)
 #        libmemcached-1.0.18
-#        boost_1.64.0
-#        postgresql-9.6.3
+#        boost_1.64.0(gearman所需)
+#        postgresql-9.6.3(僅提供php & gearman 的postgresql能力)
 #        percona-server-5.6.36-82.0(mysql)
 #        php 5.6.30
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
-#        re2c 0.16
+#        re2c 0.16(提供較好的configure能力)
 #注意：
 #        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
 #秘訣：
