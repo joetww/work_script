@@ -291,8 +291,11 @@ EOD
 #############################################
 #安裝php-memcache
 makeEnv
+PECL_MODULE="memcache"
+sudo $PHP_PATH/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
+sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
 sudo expect << EOD
-spawn $PHP_PATH/bin/pecl install memcache
+spawn $PHP_PATH/bin/pecl install $PECL_MODULE
 expect "Enable memcache session handler support"
 send "\r"
 expect eof
@@ -302,6 +305,9 @@ EOD
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
 makeEnv
+PECL_MODULE="memcached-2.2.0"
+sudo $PHP_PATH/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
+sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
 sudo expect << EOD
 spawn $PHP_PATH/bin/pecl install memcached-2.2.0
 expect "libmemcached directory"
@@ -330,6 +336,10 @@ cd gearmand-1.1.16 && \
 make && sudo make install clean
 #############################################
 #安裝php-gearman
+makeEnv
+PECL_MODULE="gearman"
+sudo $PHP_PATH/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
+sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
 sudo "PATH=$PATH" \
 bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
         export GEARMAN_INC_DIR=/usr/local/webserver/gearmand/include && \
