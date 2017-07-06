@@ -34,7 +34,8 @@
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel \
-freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel
+freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
+glibc-static
 
 #############################################
 function addString {
