@@ -6,10 +6,10 @@
 #        rubygems-2.6.12
 #        naxsi-0.55.3
 #        passenger-5.1.5
-#        libmcrypt-2.5.8(mysql所需)
+#        libmcrypt-2.5.8(mysql & php所需)
 #        libmemcached-1.0.18
 #        boost_1.64.0(gearman所需)
-#        postgresql-9.6.3(僅提供php & gearman 的postgresql能力)
+#        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
 #        percona-server-5.6.36-82.0(mysql)
 #        php 5.6.30
 #        php-memcache-2.2.7
@@ -63,13 +63,21 @@ function makeEnv {
         PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
         mkdir -p $WORKHOME
         #加入ruby的路徑
-        test -d /usr/local/webserver/ruby/bin && (
+        test -d /usr/local/webserver/ruby/bin && \
         [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
-        )
+
         #加入php的路徑
-        test -d $PHP_PATH/bin && (
+        test -d $PHP_PATH/bin && \
         [[ ":$PATH:" != *":$PHP_PATH/bin:"* ]] && PATH="$PHP_PATH/bin:${PATH}"
-        )
+
+        #加入mysqld的路徑
+        test -d /usr/local/webserver/mysql/bin && \
+        [[ ":$PATH:" != *":/usr/local/webserver/mysql/bin:"* ]] && PATH="/usr/local/webserver/mysql/bin:${PATH}"
+
+        #加入pgsqld的路徑
+        test -d /usr/local/webserver/pgsql/bin && \
+        [[ ":$PATH:" != *":/usr/local/webserver/pgsql/bin:"* ]] && PATH="/usr/local/webserver/pgsql/bin:${PATH}"
+        
         addString /etc/ld.so.conf.d/local.conf "/usr/local/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/mysql/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/gearmand/lib"
@@ -318,9 +326,7 @@ cd $WORKHOME/ && \
 wget -N https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz && \
 tar zxvf gearmand-1.1.16.tar.gz && \
 cd gearmand-1.1.16 && \
-./configure --prefix=/usr/local/webserver/gearmand \
-        --with-mysql=/usr/local/webserver/mysql/bin/mysql_config \
-        --with-postgresql=/usr/local/webserver/pgsql/bin/pg_config && \
+./configure --prefix=/usr/local/webserver/gearmand && \
 make && sudo make install clean
 #############################################
 #安裝php-gearman
