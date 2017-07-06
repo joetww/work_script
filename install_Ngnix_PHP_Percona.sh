@@ -128,8 +128,9 @@ cd $WORKHOME
 wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
 tar zxvf boost_1_64_0.tar.gz
 cd boost_1_64_0 && \
-./bootstrap.sh && \
-./b2 && sudo ./b2 install
+./bootstrap.sh
+./b2
+sudo ./b2 install
 
 #############################################
 #編譯ruby 2.4.1
