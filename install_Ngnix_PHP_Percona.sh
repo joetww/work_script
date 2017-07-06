@@ -88,7 +88,7 @@ function makeEnv {
 #安裝re2c
 makeEnv
 cd $WORKHOME 
-wget -N https://github.com/skvadrik/re2c/releases/download/0.16/re2c-0.16.tar.gz
+wget --no-check-certificate -N https://github.com/skvadrik/re2c/releases/download/0.16/re2c-0.16.tar.gz
 tar zxvf re2c-0.16.tar.gz && \
 cd re2c-0.16 && \
 ./configure && \
@@ -98,7 +98,7 @@ sudo make install clean
 #安裝libmcrypt 2.5.8
 makeEnv
 cd $WORKHOME 
-wget -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
+wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
@@ -107,7 +107,7 @@ make && sudo make install clean
 #安裝libmemcached-1.0.18
 makeEnv
 cd $WORKHOME
-wget -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
+wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
@@ -116,7 +116,7 @@ make && sudo make install clean
 #安裝libpg
 makeEnv
 cd $WORKHOME
-wget -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
+wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
 tar zxvf postgresql-9.6.3.tar.gz
 cd postgresql-9.6.3 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
@@ -125,7 +125,7 @@ make && sudo make install clean
 #安裝boost
 makeEnv
 cd $WORKHOME
-wget -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
+wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
 tar zxvf boost_1_64_0.tar.gz
 cd boost_1_64_0 && \
 ./bootstrap.sh && \
@@ -135,7 +135,7 @@ cd boost_1_64_0 && \
 #編譯ruby 2.4.1
 makeEnv
 cd $WORKHOME
-wget -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
+wget --no-check-certificate -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.1.tar.gz
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
@@ -145,7 +145,7 @@ make && sudo make install clean
 #安裝rubygems
 makeEnv
 cd $WORKHOME
-wget -N https://rubygems.org/rubygems/rubygems-2.6.12.tgz
+wget --no-check-certificate -N https://rubygems.org/rubygems/rubygems-2.6.12.tgz
 tar zxvf rubygems-2.6.12.tgz
 cd rubygems-2.6.12
 sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
@@ -153,7 +153,7 @@ sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #先抓好nginx source code
 makeEnv
 cd $WORKHOME
-wget -N https://nginx.org/download/nginx-1.13.2.tar.gz
+wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.2.tar.gz
 tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V`
 NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
 cd $NGINX_SOURCE
@@ -194,7 +194,7 @@ sudo "PATH=$PATH" \
 #追加naxsi
 makeEnv
 cd $WORKHOME && \
-wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz
+wget --no-check-certificate -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz
 tar zxvf 0.55.3.tar.gz && \
 cd naxsi-0.55.3 && \
 NAXSI_PATH=`pwd` && \
@@ -226,7 +226,7 @@ cut -d : -f 2-`
 #安裝mysql(其實是安裝其分枝 percona)
 makeEnv
 cd $WORKHOME
-wget -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.0/source/tarball/percona-server-5.6.36-82.0.tar.gz
+wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.0/source/tarball/percona-server-5.6.36-82.0.tar.gz
 tar zxvf percona-server-5.6.36-82.0.tar.gz
 cd percona-server-5.6.36-82.0
 mkdir -p bld && cd bld/ && \
@@ -273,7 +273,7 @@ $PHP_PATH/etc/php.ini
 #安裝pear
 makeEnv
 cd $WORKHOME/ && \
-wget -N http://pear.php.net/go-pear.phar
+wget --no-check-certificate -N http://pear.php.net/go-pear.phar
 sudo expect << EOD
 spawn $PHP_PATH/bin/php go-pear.phar
 expect "or Enter to continue:"
@@ -329,7 +329,7 @@ make && sudo make install clean
 #安裝gearmand 
 makeEnv
 cd $WORKHOME/ && \
-wget -N --no-check-certificate https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz
+wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz
 tar zxvf gearmand-1.1.16.tar.gz && \
 cd gearmand-1.1.16 && \
 ./configure --prefix=/usr/local/webserver/gearmand && \
