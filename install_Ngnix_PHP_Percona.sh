@@ -1,21 +1,25 @@
 ### Nginx+PHP+Percona編譯流程 ###
 ### wget -q https://raw.githubusercontent.com/joetww/work_script/master/install_Ngnix_PHP_Percona.sh -O - | bash
 #版本：
-#	nginx-1.13.2
-#	ruby-2.4.1
-#	rubygems-2.6.12
-#	naxsi-0.55.3
-#	passenger-5.1.5
-#	libmcrypt-2.5.8
-#	percona-server-5.6.36-82.0(mysql)
-#       php 5.6.30
-#       php-memcached-2.2.0
+#        nginx-1.13.2
+#        ruby-2.4.1
+#        rubygems-2.6.12
+#        naxsi-0.55.3
+#        passenger-5.1.5
+#        libmcrypt-2.5.8
+#        libmemcached-1.0.18
+#        boost_1.64.0
+#        postgresql-9.6.3
+#        percona-server-5.6.36-82.0(mysql)
+#        php 5.6.30
+#        php-memcached-2.2.0
+#        re2c 0.16
 #注意：
-#	WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
+#        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
 #秘訣：
-#       sudo 可以設定延長session timeout
-#       sudo visudo
-#       修改 Defaults        env_reset,timestamp_timeout=30
+#        sudo 可以設定延長session timeout
+#        sudo visudo
+#        修改 Defaults        env_reset,timestamp_timeout=30
 
 #先說好，我不習慣直接用root做事情，所以會先用一個一般帳號處理大多數要處理的事情
 #有需要時候再用sudo進行提昇權限的動作，
@@ -28,19 +32,19 @@
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel \
-freetype-devel openldap-devel cmake expect
+freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel
 
 #############################################
 function addString {
         test -f $1 && 
         (
         grep -Fxq $2 $1 || sudo bash -c "cat >> $1" <<EOD
-date "+#Add By `whoami` at %Y-%m-%d %H:%M:%S"
+$(date "+### Add By $(whoami) at %Y-%m-%d %H:%M:%S ###")
 $2
 EOD
         ) || (
         sudo bash -c "cat >> $1" <<EOD
-date "+#Add By `whoami` at %Y-%m-%d %H:%M:%S"
+$(date "+###Add By $(whoami) at %Y-%m-%d %H:%M:%S ###")
 $2
 EOD
 )
@@ -65,9 +69,20 @@ function makeEnv {
         )
         addString /etc/ld.so.conf.d/local.conf "/usr/local/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/mysql/lib"
+        addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/gearmand/lib"
         sudo ldconfig
 }
 
+#############################################
+#安裝re2c
+makeEnv
+cd $WORKHOME 
+wget -N https://github.com/skvadrik/re2c/releases/download/0.16/re2c-0.16.tar.gz
+tar zxvf re2c-0.16.tar.gz && \
+cd re2c-0.16 && \
+./configure && \
+make && \
+sudo make install clean
 #############################################
 #安裝libmcrypt 2.5.8
 makeEnv
@@ -95,6 +110,16 @@ tar zxvf postgresql-9.6.3.tar.gz
 cd postgresql-9.6.3 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
 make && sudo make install clean
+#############################################
+#安裝boost
+makeEnv
+cd $WORKHOME
+wget -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
+tar zxvf boost_1_64_0.tar.gz
+cd boost_1_64_0 && \
+./bootstrap.sh && \
+./b2 && sudo ./b2 install
+
 #############################################
 #編譯ruby 2.4.1
 makeEnv
@@ -284,7 +309,18 @@ $PHP_PATH/bin/phpize && \
 --with-pgsql=/usr/local/webserver/pgsql && \
 make && sudo make install clean
 #############################################
+#安裝gearmand 
+makeEnv
+cd $WORKHOME/ && \
+wget -N https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz && \
+tar zxvf gearmand-1.1.16.tar.gz && \
+cd gearmand-1.1.16 && \
+./configure --prefix=/usr/local/webserver/gearmand \
+        --with-mysql=/usr/local/webserver/mysql/bin/mysql_config \
+        --with-postgresql=/usr/local/webserver/pgsql/bin/pg_config && \
+make && sudo make install clean
 
+#############################################
 
 
 #打包
@@ -295,6 +331,7 @@ sudo tar  \
 --exclude='./webserver/php*' \
 --exclude='./webserver/pgsql' \
 --exclude='./webserver/ruby' \
+--exclude='./webserver/gearmand' \
 -zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ .
 
@@ -314,6 +351,10 @@ sudo tar --exclude='*.old' \
 #/etc/my.cnf /etc/mysql/my.cnf /usr/local/webserver/mysql/etc/my.cnf ~/.my.cnf
 sudo tar -zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/mysql
+#############################################
+#gearmand打包
+sudo tar -zcvf /tmp/gearmand_`date +%Y%m%d-%H`.tgz \
+-C /usr/local/ ./webserver/gearmand
 #############################################
 #php 5.6.30的打包
 #預設設定檔位置
