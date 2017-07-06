@@ -194,7 +194,7 @@ sudo "PATH=$PATH" \
 #追加naxsi
 makeEnv
 cd $WORKHOME && \
-wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz && \
+wget -N https://github.com/nbs-system/naxsi/archive/0.55.3.tar.gz
 tar zxvf 0.55.3.tar.gz && \
 cd naxsi-0.55.3 && \
 NAXSI_PATH=`pwd` && \
@@ -244,7 +244,7 @@ cd $WORKHOME && \
                 -O php-$PHP_VERSION.tar.gz --timeout=3 -t 1 || \
         wget http://sg2.php.net/get/php-$PHP_VERSION.tar.gz/from/this/mirror \
                 -O php-$PHP_VERSION.tar.gz --timeout=3 -t 1
-) && \
+)
 tar zxvf php-$PHP_VERSION.tar.gz && \
 cd php-$PHP_VERSION && \
 ./configure \
@@ -273,7 +273,7 @@ $PHP_PATH/etc/php.ini
 #安裝pear
 makeEnv
 cd $WORKHOME/ && \
-wget -N http://pear.php.net/go-pear.phar && \
+wget -N http://pear.php.net/go-pear.phar
 sudo expect << EOD
 spawn $PHP_PATH/bin/php go-pear.phar
 expect "or Enter to continue:"
@@ -329,7 +329,7 @@ make && sudo make install clean
 #安裝gearmand 
 makeEnv
 cd $WORKHOME/ && \
-wget -N https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz && \
+wget -N --no-check-certificate https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz
 tar zxvf gearmand-1.1.16.tar.gz && \
 cd gearmand-1.1.16 && \
 ./configure --prefix=/usr/local/webserver/gearmand && \
