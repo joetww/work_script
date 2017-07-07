@@ -11,7 +11,7 @@
 #        boost_1.64.0(gearman所需)
 #        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
 #        percona-server-5.6.36-82.0(mysql)
-#        php 5.6.30
+#        php 5.6.31
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
@@ -62,22 +62,14 @@ function makeEnv {
         sed -n 's/.*\(5.6.[0-9]\+\).*/\1/p'`
         PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
         mkdir -p $WORKHOME
-        #加入ruby的路徑
-        test -d /usr/local/webserver/ruby/bin && \
-        [[ ":$PATH:" != *":/usr/local/webserver/ruby/bin:"* ]] && PATH="/usr/local/webserver/ruby/bin:${PATH}"
-
-        #加入php的路徑
-        test -d $PHP_PATH/bin && \
-        [[ ":$PATH:" != *":$PHP_PATH/bin:"* ]] && PATH="$PHP_PATH/bin:${PATH}"
-
-        #加入mysqld的路徑
-        test -d /usr/local/webserver/mysql/bin && \
-        [[ ":$PATH:" != *":/usr/local/webserver/mysql/bin:"* ]] && PATH="/usr/local/webserver/mysql/bin:${PATH}"
-
-        #加入pgsqld的路徑
-        test -d /usr/local/webserver/pgsql/bin && \
-        [[ ":$PATH:" != *":/usr/local/webserver/pgsql/bin:"* ]] && PATH="/usr/local/webserver/pgsql/bin:${PATH}"
         
+        CUSTOM_PATH="/usr/local/webserver/ruby/bin $PHP_PATH/bin /usr/local/webserver/mysql/bin /usr/local/webserver/pgsql/bin"
+        for i in $CUSTOM_PATH;
+        do
+                test -d $i && \
+                [[ ":$PATH:" != *":$i:"* ]] && PATH="$i:${PATH}"
+        done
+
         addString /etc/ld.so.conf.d/local.conf "/usr/local/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/mysql/lib"
         addString /etc/ld.so.conf.d/local.conf "/usr/local/webserver/gearmand/lib"
@@ -224,7 +216,7 @@ cut -d : -f 2-`
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
 #############################################
-#安裝mysql(其實是安裝其分枝 percona)
+#安裝mysql(其實是安裝其分支 percona)
 makeEnv
 cd $WORKHOME
 wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.0/source/tarball/percona-server-5.6.36-82.0.tar.gz
@@ -270,7 +262,7 @@ test \! -f $PHP_PATH/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 $PHP_PATH/etc/php.ini
 
-/usr/local/webserver/php5_6_30/bin/pear version || (
+$PHP_PATH/bin/pear version || (
 #安裝pear
 makeEnv
 cd $WORKHOME/ && \
@@ -344,7 +336,7 @@ sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
 sudo "PATH=$PATH" \
 bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
         export GEARMAN_INC_DIR=/usr/local/webserver/gearmand/include && \
-        /usr/local/webserver/php5_6_30/bin/pecl install gearman"
+        $PHP_PATH/bin/pecl install gearman"
 
 #############################################
 
@@ -383,9 +375,9 @@ sudo tar -zcvf /tmp/gearmand_`date +%Y%m%d-%H`.tgz \
 #############################################
 #php 5.6.30的打包
 #預設設定檔位置
-#/usr/local/webserver/php5_6_30/etc
+#$PHP_PATH/etc
 
-#php.ini要確認pear的路徑 include_path=".:/usr/local/webserver/php5_6_30/share/pear"
+#php.ini要確認pear的路徑 include_path=".:$PHP_PATH/share/pear"
 #若是要用pear，之後若是不需要，則可以略過，目前僅用在安裝pecl-memcache & pecl-memcached
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 makeEnv
