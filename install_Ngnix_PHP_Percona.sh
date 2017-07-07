@@ -366,7 +366,10 @@ sudo tar --exclude='*.old' \
 #預設的mysql設定檔位置
 #另外請檢查預設的資料目錄位置
 #/etc/my.cnf /etc/mysql/my.cnf /usr/local/webserver/mysql/etc/my.cnf ~/.my.cnf
-sudo tar -zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
+sudo tar \
+--exclude='./webserver/mysql/etc/*' \
+--exclude='./webserver/mysql/data/*' \
+-zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/mysql
 #############################################
 #gearmand打包
@@ -381,6 +384,7 @@ sudo tar -zcvf /tmp/gearmand_`date +%Y%m%d-%H`.tgz \
 #若是要用pear，之後若是不需要，則可以略過，目前僅用在安裝pecl-memcache & pecl-memcached
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 makeEnv
-sudo tar -zcvf /tmp/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
---exclude='./webserver/php_5_6_*/etc/*' \
+sudo tar \
+--exclude='./webserver/php5_6_*/etc/*' \
+-zcvf /tmp/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`
