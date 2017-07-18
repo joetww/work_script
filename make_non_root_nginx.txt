@@ -1,0 +1,19 @@
+#沒有root權限下自己建立一個nginx服務
+#用的port要大於1024喔~
+
+mkdir -p ~/selfwork/nginx
+mkdir -p ~/src
+
+cd ~/src/
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz
+tar zxvf pcre-8.41.tar.gz
+
+wget https://nginx.org/download/nginx-1.13.3.tar.gz
+tar zxvf nginx-1.13.3.tar.gz
+
+cd nginx-1.13.3
+./configure --prefix=$HOME/selfwork/nginx --with-pcre=$HOME/src/pcre-8.41
+make && make install
+
+#編輯適合自己環境的nginx.conf
+vim $HOME/selfwork/nginx/conf/nginx.conf
