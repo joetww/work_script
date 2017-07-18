@@ -1,7 +1,7 @@
 ### Nginx+PHP+Percona編譯流程 ###
 ### wget -q https://raw.githubusercontent.com/joetww/work_script/master/install_Ngnix_PHP_Percona.sh -O - | bash
 #版本：
-#        nginx-1.13.2
+#        nginx-1.13.3
 #        ruby-2.4.1(passenger所需)
 #        rubygems-2.6.12
 #        naxsi-0.55.3
@@ -146,7 +146,7 @@ sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #先抓好nginx source code
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.2.tar.gz
+wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.3.tar.gz
 tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V`
 NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
 cd $NGINX_SOURCE
