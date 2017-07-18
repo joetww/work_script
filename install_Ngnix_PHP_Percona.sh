@@ -147,7 +147,7 @@ sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 makeEnv
 cd $WORKHOME
 wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.3.tar.gz
-tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V`
+tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V | tail -n 1`
 NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
 cd $NGINX_SOURCE
 #############################################
