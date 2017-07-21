@@ -339,6 +339,16 @@ bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
         $PHP_PATH/bin/pecl install gearman"
 
 #############################################
+#安裝redis
+makeEnv
+cd $WORKHOME/ && \
+wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.0.tar.gz
+tar zxvf redis-4.0.0.tar.gz
+cd redis-4.0.0 && \
+make PREFIX=/usr/local/webserver/redis
+sudo make PREFIX=/usr/local/webserver/redis install clean
+
+#############################################
 
 #打包
 makeEnv
