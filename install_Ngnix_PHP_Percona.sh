@@ -346,7 +346,7 @@ cd $WORKHOME/ && \
 wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.0.tar.gz
 tar zxvf redis-4.0.0.tar.gz
 cd redis-4.0.0 && \
-make PREFIX=/usr/local/webserver/redis
+make PREFIX=/usr/local/webserver/redis && \
 sudo make PREFIX=/usr/local/webserver/redis install clean
 
 #############################################
