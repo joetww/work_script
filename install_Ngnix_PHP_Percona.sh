@@ -16,6 +16,7 @@
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
 #        re2c 0.16(提供較好的configure能力)
+#        redis 4.0.0
 #注意：
 #        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
 #秘訣：
@@ -359,6 +360,7 @@ sudo tar  \
 --exclude='./webserver/pgsql' \
 --exclude='./webserver/ruby' \
 --exclude='./webserver/gearmand' \
+--exclude='./webserver/redis' \
 -zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ .
 
@@ -385,6 +387,10 @@ sudo tar \
 #gearmand打包
 sudo tar -zcvf /tmp/gearmand_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/gearmand
+#############################################
+#redis打包
+sudo tar -zcvf /tmp/redis_`date +%Y%m%d-%H`.tgz \
+-C /usr/local/ ./webserver/redis
 #############################################
 #php 5.6.30的打包
 #預設設定檔位置
