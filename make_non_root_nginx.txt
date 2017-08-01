@@ -8,11 +8,14 @@ cd ~/src/
 wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz
 tar zxvf pcre-8.41.tar.gz
 
+#https://www.nginx.com/resources/wiki/modules/fancy_index/
+git clone https://github.com/aperezdc/ngx-fancyindex.git ngx-fancyindex
+
 wget https://nginx.org/download/nginx-1.13.3.tar.gz
 tar zxvf nginx-1.13.3.tar.gz
 
 cd nginx-1.13.3
-./configure --prefix=$HOME/selfwork/nginx --with-pcre=$HOME/src/pcre-8.41
+./configure --prefix=$HOME/selfwork/nginx --with-pcre=$HOME/src/pcre-8.41 --add-module=../ngx-fancyindex
 make && make install
 
 #編輯適合自己環境的nginx.conf
