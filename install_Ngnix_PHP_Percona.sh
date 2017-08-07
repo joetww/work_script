@@ -10,13 +10,13 @@
 #        libmemcached-1.0.18
 #        boost_1.64.0(gearman所需)
 #        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
-#        percona-server-5.6.36-82.0(mysql)
+#        percona-server-5.6.36-82.1(mysql)
 #        php 5.6.31
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
 #        re2c 0.16(提供較好的configure能力)
-#        redis 4.0.0
+#        redis 4.0.1
 #注意：
 #        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
 #秘訣：
@@ -220,9 +220,9 @@ cut -d : -f 2-`
 #安裝mysql(其實是安裝其分支 percona)
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.0/source/tarball/percona-server-5.6.36-82.0.tar.gz
-tar zxvf percona-server-5.6.36-82.0.tar.gz
-cd percona-server-5.6.36-82.0
+wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.1/source/tarball/percona-server-5.6.36-82.1.tar.gz
+tar zxvf percona-server-5.6.36-82.1.tar.gz
+cd percona-server-5.6.36-82.1
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
 make && sudo make install clean
@@ -343,9 +343,9 @@ bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
 #安裝redis
 makeEnv
 cd $WORKHOME/ && \
-wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.0.tar.gz
-tar zxvf redis-4.0.0.tar.gz
-cd redis-4.0.0 && \
+wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.1.tar.gz
+tar zxvf redis-4.0.1.tar.gz
+cd redis-4.0.1 && \
 make PREFIX=/usr/local/webserver/redis && \
 sudo make PREFIX=/usr/local/webserver/redis install clean
 
