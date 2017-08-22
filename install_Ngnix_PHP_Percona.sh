@@ -8,7 +8,7 @@
 #        passenger-5.1.5
 #        libmcrypt-2.5.8(mysql & php所需)
 #        libmemcached-1.0.18
-#        boost_1.64.0(gearman所需)
+#        boost_1.65.0(gearman所需)
 #        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
 #        percona-server-5.6.36-82.1(mysql)
 #        php 5.6.31
@@ -118,9 +118,9 @@ make && sudo make install clean
 #安裝boost
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
-tar zxvf boost_1_64_0.tar.gz
-cd boost_1_64_0 && \
+wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_65_0.tar.gz
+tar zxvf boost_1_65_0.tar.gz
+cd boost_1_65_0 && \
 ./bootstrap.sh
 ./b2
 sudo ./b2 install
