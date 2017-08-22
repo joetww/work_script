@@ -8,6 +8,7 @@
 #        passenger-5.1.5
 #        libmcrypt-2.5.8(mysql & php所需)
 #        libmemcached-1.0.18
+#        gearman-1.1.17
 #        boost_1.65.0(gearman所需)
 #        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
 #        percona-server-5.6.36-82.1(mysql)
@@ -323,9 +324,9 @@ make && sudo make install clean
 #安裝gearmand 
 makeEnv
 cd $WORKHOME/ && \
-wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/download/1.1.16/gearmand-1.1.16.tar.gz
-tar zxvf gearmand-1.1.16.tar.gz && \
-cd gearmand-1.1.16 && \
+wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/download/1.1.17/gearmand-1.1.17.tar.gz
+tar zxvf gearmand-1.1.17.tar.gz && \
+cd gearmand-1.1.17 && \
 ./configure --prefix=/usr/local/webserver/gearmand && \
 make && sudo make install clean
 #############################################
