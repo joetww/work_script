@@ -10,7 +10,7 @@
 #        libmemcached-1.0.18
 #        gearman-1.1.17
 #        boost_1.65.0(gearman所需)
-#        postgresql-9.6.3(僅提供php & gearman的postgresql能力)
+#        postgresql-9.6.4(僅提供php & gearman的postgresql能力)
 #        percona-server-5.6.36-82.1(mysql)
 #        php 5.6.31
 #        php-memcache-2.2.7
@@ -110,9 +110,9 @@ make && sudo make install clean
 #安裝libpg
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.3/postgresql-9.6.3.tar.gz
-tar zxvf postgresql-9.6.3.tar.gz
-cd postgresql-9.6.3 && \
+wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.4/postgresql-9.6.4.tar.gz
+tar zxvf postgresql-9.6.4.tar.gz
+cd postgresql-9.6.4 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
 make && sudo make install clean
 #############################################
