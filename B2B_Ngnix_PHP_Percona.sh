@@ -57,6 +57,7 @@ EOD
 
 function makeEnv {
         WORKHOME=~/work/
+        PROJOECT="B2B"
         NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
         test -z ${PHP_VERSION+x} && echo "SET PHP_VERSION" && \
         PHP_VERSION=`curl -s http://php.net/downloads.php | \
@@ -228,6 +229,15 @@ mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
 make && sudo make install clean
 
+makeEnv
+cd $WORKHOME
+wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.1.tar.gz 
+tar zxvf memcached-1.5.1.tar.gz
+cd memcached-1.5.1
+./configure --prefix=/usr/local/webserver/memcached && \
+make && \
+sudo make install
+
 #############################################
 #安裝PHP 7.0.x
 makeEnv
@@ -388,15 +398,15 @@ sudo tar --exclude='*.old' \
 sudo tar \
 --exclude='./webserver/mysql/etc/*' \
 --exclude='./webserver/mysql/data/*' \
--zcvf /tmp/mysql_`date +%Y%m%d-%H`.tgz \
+-zcvf /tmp/${PROJOECT}_mysql_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/mysql
 #############################################
 #gearmand打包
-sudo tar -zcvf /tmp/gearmand_`date +%Y%m%d-%H`.tgz \
+sudo tar -zcvf /tmp/${PROJOECT}_gearmand_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/gearmand
 #############################################
 #redis打包
-sudo tar -zcvf /tmp/redis_`date +%Y%m%d-%H`.tgz \
+sudo tar -zcvf /tmp/${PROJOECT}_redis_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/redis
 #############################################
 #php 5.6.30的打包
@@ -409,5 +419,5 @@ sudo tar -zcvf /tmp/redis_`date +%Y%m%d-%H`.tgz \
 makeEnv
 sudo tar \
 --exclude='./webserver/php7_0_*/etc/*' \
--zcvf /tmp/`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
+-zcvf /tmp/${PROJOECT}_`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
 -C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`
