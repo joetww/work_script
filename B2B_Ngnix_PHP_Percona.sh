@@ -248,7 +248,7 @@ cd php-$PHP_VERSION && \
 --with-config-file-path=$PHP_PATH/etc \
 --localstatedir=$PHP_PATH/var \
 --datadir=$PHP_PATH/share/php \
---mandir=$PHP_PATH/share/man
+--mandir=$PHP_PATH/share/man \
 --with-mysql=mysqlnd --with-mysqli=mysqlnd \
 --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir \
 --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr \
