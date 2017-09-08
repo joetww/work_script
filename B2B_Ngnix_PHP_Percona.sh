@@ -246,6 +246,7 @@ cd php-$PHP_VERSION && \
 --prefix=$PHP_PATH \
 --sysconfdir=$PHP_PATH/etc \
 --with-config-file-path=$PHP_PATH/etc \
+--with-config-file-scan-dir=$PHP_PATH/etc/php.d \
 --localstatedir=$PHP_PATH/var \
 --datadir=$PHP_PATH/share/php \
 --mandir=$PHP_PATH/share/man \
@@ -291,16 +292,10 @@ EOD
 #############################################
 #安裝php-memcache
 makeEnv
-PECL_MODULE="memcache"
-sudo $PHP_PATH/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
-sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
-sudo expect << EOD
-spawn $PHP_PATH/bin/pecl install $PECL_MODULE
-expect "Enable memcache session handler support"
-send "\r"
-expect eof
-EOD
-
+test -f "memcache-3.0.9.tgz" && tar zxvf "memcache-3.0.9.tgz" && (
+cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && make && sudo make install clean && \
+echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini
+)
 
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
@@ -314,6 +309,7 @@ expect "libmemcached directory"
 send "\r"
 expect eof
 EOD
+echo 'extension=memcached.so' > $PHP_PATH/etc/php.d/memcached.ini
 
 #############################################
 #安裝php-pgsql
