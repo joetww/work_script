@@ -11,8 +11,8 @@
 #        gearman-1.1.17
 #        boost_1.65.0(gearman所需)
 #        postgresql-9.6.4(僅提供php & gearman的postgresql能力)
-#        percona-server-5.6.36-82.1(mysql)
-#        php 5.6.31
+#        percona-server-5.7.19-17(mysql)
+#        php 7.0.23
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
@@ -221,9 +221,9 @@ cut -d : -f 2-`
 #安裝mysql(其實是安裝其分支 percona)
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.36-82.1/source/tarball/percona-server-5.6.36-82.1.tar.gz
-tar zxvf percona-server-5.6.36-82.1.tar.gz
-cd percona-server-5.6.36-82.1
+wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.19-17/source/tarball/percona-server-5.7.19-17.tar.gz
+tar zxvf percona-server-5.7.19-17.tar.gz
+cd percona-server-5.7.19-17
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
 make && sudo make install clean
@@ -292,14 +292,17 @@ EOD
 #############################################
 #安裝php-memcache
 makeEnv
+sudo mkdir -p $PHP_PATH/etc/php.d/
+cd $WORKHOME
 test -f "memcache-3.0.9.tgz" && tar zxvf "memcache-3.0.9.tgz" && (
 cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && make && sudo make install clean && \
-echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini
+sudo sh -c "echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini"
 )
 
 #############################################
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
 makeEnv
+sudo mkdir -p $PHP_PATH/etc/php.d/
 PECL_MODULE="memcached-3.0.3"
 sudo $PHP_PATH/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
 sudo $PHP_PATH/bin/pecl uninstall $PECL_MODULE
@@ -309,7 +312,7 @@ expect "libmemcached directory"
 send "\r"
 expect eof
 EOD
-echo 'extension=memcached.so' > $PHP_PATH/etc/php.d/memcached.ini
+sudo sh -c "echo 'extension=memcached.so' > $PHP_PATH/etc/php.d/memcached.ini"
 
 #############################################
 #安裝php-pgsql
@@ -403,6 +406,6 @@ sudo tar -zcvf /tmp/redis_`date +%Y%m%d-%H`.tgz \
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 makeEnv
 sudo tar \
---exclude='./webserver/php5_6_*/etc/*' \
--zcvf /tmp/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php5_6 | sort -V | tail -n 1`
+--exclude='./webserver/php7_0_*/etc/*' \
+-zcvf /tmp/`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
+-C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`
