@@ -294,7 +294,9 @@ EOD
 makeEnv
 sudo mkdir -p $PHP_PATH/etc/php.d/
 cd $WORKHOME
-test -f "memcache-3.0.9.tgz" && tar zxvf "memcache-3.0.9.tgz" && (
+test -f "memcache-3.0.9.tgz" && \
+wget --no-check-certificate -N https://github.com/joetww/work_script/raw/master/memcache-3.0.9.tgz && \
+tar zxvf "memcache-3.0.9.tgz" && (
 cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && make && sudo make install clean && \
 sudo sh -c "echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini"
 )
