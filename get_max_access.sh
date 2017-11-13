@@ -20,10 +20,10 @@ BADSTRINGCOMMAND=`join_by \| ${BADSTRING}`
 IFS=${OLDIFS};
 
 WHITELIST="
-    133.130.124.49
-    106.104.136.243
-    1.171.159.58
-    1.171.160.60
+    1.2.3.4
+    5.6.7.8
+    8.8.8.8
+    8.8.4.4
 "
 VERYBADLIST="
     182.118.33.6
@@ -94,11 +94,12 @@ RENEW_BLACKLIST=$(
 
 echo "("$(echo "${RENEW_BLACKLIST}" | head -n 30 | wc -l)"/"$(echo "${RENEW_BLACKLIST}" | wc -l)")"
 echo "${RENEW_BLACKLIST}" | head -n 30;
-echo "${RENEW_BLACKLIST}" | grep -A 3 -B 3 220.135.106.53
+
 
 echo 
 echo "塞資料入proxy";
 for i in `cat ~/seoproxylist.txt | grep -v ^$ |  head -n 20 `
 do
+    echo .
     ssh -o StrictHostKeyChecking=no joeyue@${i} "${RENEW_BLACKLIST}"
 done
