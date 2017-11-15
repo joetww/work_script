@@ -1,0 +1,20 @@
+# 先搞定tor
+# https://www.torproject.org/download/download.html.en
+# 以下都用root搞定
+
+wget https://www.torproject.org/dist/tor-0.3.1.8.tar.gz
+tar zxvf tor-0.3.1.8.tar.gz
+cd tor-0.3.1.8
+
+./configure && make && make install clean
+
+# 可以不用root跑起tor
+/usr/local/bin/tor &
+
+
+# 接下來用socat來轉接
+socat TCP4-LISTEN:23,reuseaddr,fork SOCKS4:127.0.0.1:74.52.17.106:23,socksport=9050 &
+
+# 感覺上這方法很笨
+# 只能針對一個BBS
+# 有人有其他推薦解法嗎?
