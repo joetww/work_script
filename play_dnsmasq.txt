@@ -1,0 +1,21 @@
+# /etc/dnsmasq.conf
+
+resolv-file=
+server=8.8.8.8
+server=8.8.4.4
+local=
+listen-address=127.0.1.3
+listen-address=192.168.8.21
+local-ttl=300
+
+
+# 跑第二隻不一樣port的dnsmasq, 怕第二隻掛掉
+/usr/sbin/dnsmasq --port=5353
+
+# 用iptables將某些查詢導入port 5353的dnsmasq
+iptables -t nat -A OUTPUT -p udp —dport 53 -d 127.0.2.0 -j DNAT —to-destination 192.168.8.21:5353
+iptables -t nat -A OUTPUT -p tcp —dport 53 -d 127.0.2.0 -j DNAT —to-destination 192.168.8.21:5353
+
+# 設定 /etc/resolv.conf
+nameserver 127.0.1.3
+nameserver 127.0.2.0
