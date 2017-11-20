@@ -9,8 +9,9 @@ listen-address=192.168.8.21
 local-ttl=300
 
 
-# 跑第二隻不一樣port的dnsmasq, 怕第二隻掛掉
-/usr/sbin/dnsmasq --port=5353
+/usr/sbin/dnsmasq --no-resolv --all-servers --pid-file=/var/run/dnsmasq.5353.pid --port=5353 --stop-dns-rebind
+/usr/sbin/dnsmasq --no-resolv --all-servers --pid-file=/var/run/dnsmasq.53.pid --port=53 --stop-dns-rebind
+
 
 # 用iptables將某些查詢導入port 5353的dnsmasq
 iptables -t nat -A OUTPUT -p udp —dport 53 -d 127.0.2.0 -j DNAT —to-destination 192.168.8.21:5353
