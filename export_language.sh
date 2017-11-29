@@ -1,6 +1,6 @@
 #!/bin/sh
 #也可以這樣子執行
-# Usage: curl -s https://raw.githubusercontent.com/joetww/work_script/master/export_language.sh | bash /dev/stdin [<dev|pre|pro>]
+# Usage: curl -s https://raw.githubusercontent.com/joetww/work_script/master/export_language.sh | bash /dev/stdin [<dev|pre|pro>] [useraccount]
 display_usage() {
         echo -e "\nUsage:\n$0 [<dev|pre|pro>] [useraccount]\n"
 }
