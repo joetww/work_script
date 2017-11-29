@@ -29,7 +29,7 @@ case "${1,,}" in
         pre)
                 echo "Pre"
                 TARGETIP="192.168.8.21"
-                TARGETPORT=27777
+                TARGETPORT=22
                 TARGETPATH="/www/pre/tingzhu/trunk/application/language"
                 SOURCEIP="192.168.8.25"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
@@ -37,7 +37,7 @@ case "${1,,}" in
         pro)
                 echo "Pro"
                 TARGETIP="192.168.8.21"
-                TARGETPORT=27777
+                TARGETPORT=22
                 TARGETPATH="/www/tingzhu/trunk/application/language"
                 SOURCEIP="192.168.8.25"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
