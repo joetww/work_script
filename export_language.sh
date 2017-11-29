@@ -4,6 +4,10 @@ display_usage() {
         echo -e "\nUsage:\n$0 [<dev|pre|pro>] \n"
 }
 
+check_ip() {
+        [[ $(ifconfig | grep -Eo 'inet (addr:)?((192\.168\.|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)([0-9]*\.){2,3})[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*') != ${SOURCEIP} ]] && { echo -e "\nRun on wrong IP:\n$(ifconfig | grep -Eo 'inet (addr:)?((192\.168\.|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)([0-9]*\.){2,3})[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')\n" ; exit 3; }
+}
+
 if [ $# -lt 1 ]
 then
         display_usage
@@ -15,6 +19,7 @@ case "${1,,}" in
                 TARGETIP="10.64.145.102"
                 TARGETPORT=27777
                 TARGETPATH="/www/tingzhu/trunk/application/language"
+                SOURCEIP="10.64.145.101"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
         ;;
         pre)
@@ -22,6 +27,7 @@ case "${1,,}" in
                 TARGETIP="192.168.8.21"
                 TARGETPORT=27777
                 TARGETPATH="/www/pre/tingzhu/trunk/application/language"
+                SOURCEIP="192.168.8.25"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
         ;;
         pro)
@@ -29,17 +35,20 @@ case "${1,,}" in
                 TARGETIP="192.168.8.21"
                 TARGETPORT=27777
                 TARGETPATH="/www/tingzhu/trunk/application/language"
+                SOURCEIP="192.168.8.25"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
         ;;
         *)      display_usage
                 exit 2
         ;;
 esac
+
+check_ip
 #LANGUAGEPATH=$(find /www/zonghoutai/{branch,trunk} -type d -name "language" 2>/dev/null | grep "export/" | tail -n 1)
 #OLDPWD=$(pwd)
 cd ${LANGUAGEPATH}
-printf "%30s\t-->\t%30s\n" $LANGUAGEPATH $TARGETPATH
+printf "%s: %-60s\t-->\t%s: %-60s\n" $SOURCEIP $LANGUAGEPATH $TARGETIP $TARGETPATH
 LISTFILE=$(find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -print \))
 find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -ls \)
-#tar zcf - $(echo ${LISTFILE}) | \
-#ssh $USER@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; tar zcf ~/language/old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && tar zxvf - -C ${TARGETPATH} "
+tar zcf - $(echo ${LISTFILE}) | \
+ssh $USER@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; tar zcf ~/language/old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && tar zxvf - -C ${TARGETPATH} "
