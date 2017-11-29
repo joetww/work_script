@@ -17,11 +17,9 @@ then
 fi
 
 TARGETUSER=${2:-root}
-echo ${TARGETUSER}
-exit
+
 case "${1,,}" in
         dev)    echo "Dev"
-                TARGETUSER="root"
                 TARGETIP="10.64.145.102"
                 TARGETPORT=27777
                 TARGETPATH="/www/tingzhu/trunk/application/language"
@@ -30,7 +28,6 @@ case "${1,,}" in
         ;;
         pre)
                 echo "Pre"
-                TARGETUSER="root"
                 TARGETIP="192.168.8.21"
                 TARGETPORT=27777
                 TARGETPATH="/www/pre/tingzhu/trunk/application/language"
@@ -58,4 +55,4 @@ printf "%s: %-60s\t-->\t%s: %-60s\n" $SOURCEIP $LANGUAGEPATH $TARGETIP $TARGETPA
 LISTFILE=$(find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -print \))
 find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -ls \)
 tar zcf - $(echo ${LISTFILE}) | \
-ssh $USER@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; tar zcf ~/language/old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && tar zxvf - -C ${TARGETPATH} "
+ssh ${TARGETUSER}@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; sudo tar zcf ~/language/old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && sudo tar zxvf - -C ${TARGETPATH} "
