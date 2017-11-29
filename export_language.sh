@@ -1,12 +1,13 @@
 #!/bin/sh
-#也可以這樣子跑
-#Usage:  curl -s https://raw.githubusercontent.com/joetww/work_script/master/export_language.sh | bash /dev/stdin dev
+#也可以這樣子執行
+# Usage: curl -s https://raw.githubusercontent.com/joetww/work_script/master/export_language.sh | bash /dev/stdin [<dev|pre|pro>]
 display_usage() {
         echo -e "\nUsage:\n$0 [<dev|pre|pro>] \n"
 }
 
 check_ip() {
-        [[ $(ifconfig | grep -Eo 'inet (addr:)?((192\.168\.|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)([0-9]*\.){2,3})[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*') != ${SOURCEIP} ]] && { echo -e "\nRun on wrong IP:\n$(ifconfig | grep -Eo 'inet (addr:)?((192\.168\.|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)([0-9]*\.){2,3})[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')\n" ; exit 3; }
+        getIP=$(ifconfig | grep -Eo 'inet (addr:)?((192\.168\.|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)([0-9]*\.){1,2})[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+        [[ ${getIP} != ${SOURCEIP} ]] && { echo -e "\nRun on wrong IP:\n${getIP}\n" ; exit 3; }
 }
 
 if [ $# -lt 1 ]
