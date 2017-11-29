@@ -2,7 +2,7 @@
 #也可以這樣子執行
 # Usage: curl -s https://raw.githubusercontent.com/joetww/work_script/master/export_language.sh | bash /dev/stdin [<dev|pre|pro>]
 display_usage() {
-        echo -e "\nUsage:\n$0 [<dev|pre|pro>] \n"
+        echo -e "\nUsage:\n$0 [<dev|pre|pro>] [useraccount]\n"
 }
 
 check_ip() {
@@ -16,8 +16,12 @@ then
         exit 1
 fi
 
+TARGETUSER=${2:-root}
+echo ${TARGETUSER}
+exit
 case "${1,,}" in
         dev)    echo "Dev"
+                TARGETUSER="root"
                 TARGETIP="10.64.145.102"
                 TARGETPORT=27777
                 TARGETPATH="/www/tingzhu/trunk/application/language"
@@ -26,6 +30,7 @@ case "${1,,}" in
         ;;
         pre)
                 echo "Pre"
+                TARGETUSER="root"
                 TARGETIP="192.168.8.21"
                 TARGETPORT=27777
                 TARGETPATH="/www/pre/tingzhu/trunk/application/language"
