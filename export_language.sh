@@ -55,4 +55,4 @@ printf "%s: %-60s\t-->\t%s: %-60s\n" $SOURCEIP $LANGUAGEPATH $TARGETIP $TARGETPA
 LISTFILE=$(find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -print \))
 find . \( -path ./.svn -o -path ./index.html \) -prune -o \( -type f -ls \)
 tar zcf - $(echo ${LISTFILE}) | \
-ssh ${TARGETUSER}@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; sudo tar zcf ~/language/old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && sudo tar zxvf - -C ${TARGETPATH} "
+ssh ${TARGETUSER}@${TARGETIP} -p${TARGETPORT} "mkdir -p ~/language; sudo tar zcf ~/language/${1,,}_old_language_`date +\%Y\%m\%d_\%H\%M\%S`.tgz -C ${TARGETPATH} . --exclude-vcs && sudo tar zxvf - -C ${TARGETPATH} "
