@@ -20,10 +20,10 @@ TARGETUSER=${2:-root}
 
 case "${1,,}" in
         dev)    echo "Dev"
-                TARGETIP="10.64.145.102"
+                TARGETIP="10.117.200.228"
                 TARGETPORT=27777
                 TARGETPATH="/www/tingzhu/trunk/application/language"
-                SOURCEIP="10.64.145.101"
+                SOURCEIP="10.117.200.227"
                 LANGUAGEPATH="/www/zonghoutai/trunk/web/application/export/language"
         ;;
         pre)
