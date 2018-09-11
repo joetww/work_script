@@ -65,8 +65,8 @@ function makeEnv {
         grep -P '<h3 id="v7\.0\.\d+" class="title">' | \
         sed -n 's/.*\(7.0.[0-9]\+\).*/\1/p'`
         PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
-        mkdir -p $WORKHOME
-        mkdir -p $DESTDIR
+        sudo mkdir -p $WORKHOME
+        sudo mkdir -p $DESTDIR
         
         CUSTOM_PATH="/usr/local/webserver/ruby/bin $PHP_PATH/bin /usr/local/webserver/mysql/bin /usr/local/webserver/pgsql/bin"
         for i in $CUSTOM_PATH;
@@ -89,7 +89,7 @@ wget --no-check-certificate -N https://github.com/skvadrik/re2c/releases/downloa
 tar zxvf re2c-0.16.tar.gz && \
 cd re2c-0.16 && \
 ./configure && \
-make && \
+sudo make && \
 sudo make install clean
 #############################################
 #安裝libmcrypt 2.5.8
@@ -99,7 +99,7 @@ wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
-make && sudo make install clean
+sudo make && sudo make install clean
 #############################################
 #安裝libmemcached-1.0.18
 makeEnv
@@ -108,7 +108,7 @@ wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+do
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-make && sudo make install clean
+sudo make && sudo make install clean
 #############################################
 #安裝libpg
 makeEnv
@@ -117,7 +117,7 @@ wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.4/post
 tar zxvf postgresql-9.6.4.tar.gz
 cd postgresql-9.6.4 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
-make && sudo make install clean
+sudo make && sudo make install clean
 #############################################
 #安裝boost
 makeEnv
@@ -137,7 +137,7 @@ wget --no-check-certificate -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
-make && sudo make install clean
+sudo make && sudo make install clean
 
 #############################################
 #安裝rubygems
@@ -210,7 +210,7 @@ cut -d : -f 2-`
 ./configure --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #這是動態模組
 #./configure --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
-#make && sudo make install clean
+#sudo make && sudo make install clean
 
 #############################################
 #若是以後想要單獨編譯動態模組
@@ -229,7 +229,7 @@ tar zxvf percona-server-5.7.19-17.tar.gz
 cd percona-server-5.7.19-17
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
-make && sudo make install clean
+sudo make && sudo make install clean
 
 makeEnv
 cd $WORKHOME
@@ -237,7 +237,7 @@ wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.1.ta
 tar zxvf memcached-1.5.1.tar.gz
 cd memcached-1.5.1
 ./configure --prefix=/usr/local/webserver/memcached && \
-make && \
+sudo make && \
 sudo make install
 
 #############################################
@@ -273,7 +273,7 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --with-bz2 --enable-soap && \
-make && sudo make install clean
+sudo make && sudo make install clean
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
@@ -309,7 +309,7 @@ cd $WORKHOME
 test -f "memcache-3.0.9.tgz" && \
 wget --no-check-certificate -N https://github.com/joetww/work_script/raw/master/memcache-3.0.9.tgz && \
 tar zxvf "memcache-3.0.9.tgz" && (
-cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && make && sudo make install clean && \
+cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && sudo make && sudo make install clean && \
 sudo sh -c "echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini"
 )
 
@@ -336,7 +336,7 @@ $PHP_PATH/bin/phpize && \
 ./configure \
 --with-php-config=$PHP_PATH/bin/php-config \
 --with-pgsql=/usr/local/webserver/pgsql && \
-make && sudo make install clean
+sudo make && sudo make install clean
 
 #############################################
 #安裝gearmand 
@@ -346,7 +346,7 @@ wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/down
 tar zxvf gearmand-1.1.17.tar.gz && \
 cd gearmand-1.1.17 && \
 ./configure --prefix=/usr/local/webserver/gearmand && \
-make && sudo make install clean
+sudo make && sudo make install clean
 #############################################
 #安裝php-gearman
 makeEnv
