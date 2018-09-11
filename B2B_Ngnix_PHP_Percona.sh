@@ -127,7 +127,7 @@ tar zxvf boost_1_65_0.tar.gz
 cd boost_1_65_0 && \
 ./bootstrap.sh
 ./b2
-sudo ./b2 install
+sudo ./b2 --prefix=$DESTDIR/usr/local install
 
 #############################################
 #編譯ruby 2.4.1
