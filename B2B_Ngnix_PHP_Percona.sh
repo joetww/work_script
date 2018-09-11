@@ -57,6 +57,7 @@ EOD
 
 function makeEnv {
         WORKHOME=~/work/
+        DESTDIR=/www/`date +%Y%m%d%H`
         PROJOECT="B2B"
         NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
         test -z ${PHP_VERSION+x} && echo "SET PHP_VERSION" && \
@@ -65,6 +66,7 @@ function makeEnv {
         sed -n 's/.*\(7.0.[0-9]\+\).*/\1/p'`
         PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
         mkdir -p $WORKHOME
+        mkdir -p $DESTDIR
         
         CUSTOM_PATH="/usr/local/webserver/ruby/bin $PHP_PATH/bin /usr/local/webserver/mysql/bin /usr/local/webserver/pgsql/bin"
         for i in $CUSTOM_PATH;
