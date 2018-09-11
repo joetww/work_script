@@ -128,7 +128,7 @@ wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-
 tar zxvf percona-server-5.7.19-17.tar.gz
 cd percona-server-5.7.19-17
 mkdir -p bld && cd bld/ && \
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=utf8 \
+sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=utf8 \
          -DDEFAULT_COLLATION=utf8_general_ci \
          -DDOWNLOAD_BOOST=1 \
          -DWITH_BOOST=/usr/local/boost .. && \
