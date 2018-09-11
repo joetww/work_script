@@ -90,7 +90,7 @@ tar zxvf re2c-0.16.tar.gz && \
 cd re2c-0.16 && \
 ./configure && \
 sudo make && \
-sudo make DESTDIR=$DESTDIR install && make install clean
+sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #############################################
 #安裝libmcrypt 2.5.8
 makeEnv
@@ -99,7 +99,7 @@ wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
-sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #############################################
 #安裝libmemcached-1.0.18
 makeEnv
@@ -108,7 +108,7 @@ wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+do
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #############################################
 #安裝libpg
 makeEnv
@@ -117,7 +117,7 @@ wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.4/post
 tar zxvf postgresql-9.6.4.tar.gz
 cd postgresql-9.6.4 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
-sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #############################################
 #安裝boost
 makeEnv
@@ -137,7 +137,7 @@ wget --no-check-certificate -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
-sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝rubygems
