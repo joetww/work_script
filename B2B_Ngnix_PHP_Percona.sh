@@ -118,16 +118,33 @@ tar zxvf postgresql-9.6.4.tar.gz
 cd postgresql-9.6.4 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
 sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+
+
 #############################################
-#安裝boost
+#安裝mysql(其實是安裝其分支 percona)
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.gz
-tar zxvf boost_1_65_0.tar.gz
-cd boost_1_65_0 && \
-./bootstrap.sh
-./b2
-sudo ./b2 --prefix=$DESTDIR/usr/local install
+wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.19-17/source/tarball/percona-server-5.7.19-17.tar.gz
+tar zxvf percona-server-5.7.19-17.tar.gz
+cd percona-server-5.7.19-17
+mkdir -p bld && cd bld/ && \
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=utf8 \
+         -DDEFAULT_COLLATION=utf8_general_ci \
+         -DDOWNLOAD_BOOST=1 \
+         -DWITH_BOOST=/usr/local/boost .. && \
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+
+
+##############################################
+##安裝boost
+#makeEnv
+#cd $WORKHOME
+#wget --no-check-certificate -N https://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.gz
+#tar zxvf boost_1_65_0.tar.gz
+#cd boost_1_65_0 && \
+#./bootstrap.sh
+#./b2
+#sudo ./b2 --prefix=$DESTDIR/usr/local install
 
 #############################################
 #編譯ruby 2.4.1
@@ -221,16 +238,6 @@ cut -d : -f 2-`
 
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
-#############################################
-#安裝mysql(其實是安裝其分支 percona)
-makeEnv
-cd $WORKHOME
-wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.19-17/source/tarball/percona-server-5.7.19-17.tar.gz
-tar zxvf percona-server-5.7.19-17.tar.gz
-cd percona-server-5.7.19-17
-mkdir -p bld && cd bld/ && \
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
-sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 makeEnv
 cd $WORKHOME
