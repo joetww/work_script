@@ -32,7 +32,7 @@
 #正片開始
 #先準備 
 #############################################
-
+DESTDIR=/www/`date +%Y%m%d%H`
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
@@ -57,7 +57,7 @@ EOD
 
 function makeEnv {
         WORKHOME=~/work/
-        DESTDIR=/www/`date +%Y%m%d%H`
+        
         PROJOECT="B2B"
         NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
         test -z ${PHP_VERSION+x} && echo "SET PHP_VERSION" && \
@@ -90,7 +90,7 @@ tar zxvf re2c-0.16.tar.gz && \
 cd re2c-0.16 && \
 ./configure && \
 sudo make && \
-sudo make DESTDIR=$DESTDIR install
+sudo make DESTDIR=$DESTDIR install && make install clean
 #############################################
 #安裝libmcrypt 2.5.8
 makeEnv
@@ -99,7 +99,7 @@ wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/
 tar zxvf libmcrypt-2.5.8.tar.gz
 cd libmcrypt-2.5.8
 ./configure --prefix=/usr/local && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
 #############################################
 #安裝libmemcached-1.0.18
 makeEnv
@@ -108,7 +108,7 @@ wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+do
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
 #############################################
 #安裝libpg
 makeEnv
@@ -117,7 +117,7 @@ wget --no-check-certificate -N https://ftp.postgresql.org/pub/source/v9.6.4/post
 tar zxvf postgresql-9.6.4.tar.gz
 cd postgresql-9.6.4 && \
 ./configure --prefix=/usr/local/webserver/pgsql && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
 #############################################
 #安裝boost
 makeEnv
@@ -137,7 +137,7 @@ wget --no-check-certificate -N https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4
 tar zxvf ruby-2.4.1.tar.gz
 cd ruby-2.4.1
 ./configure --prefix=/usr/local/webserver/ruby && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && make install clean
 
 #############################################
 #安裝rubygems
@@ -146,12 +146,13 @@ cd $WORKHOME
 wget --no-check-certificate -N https://rubygems.org/rubygems/rubygems-2.6.12.tgz
 tar zxvf rubygems-2.6.12.tgz
 cd rubygems-2.6.12
+sudo "PATH=$PATH" $DESTDIR/usr/local/webserver/ruby/bin/ruby setup.rb
 sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 #############################################
 #先抓好nginx source code
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.4.tar.gz
+wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.12.tar.gz
 tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V | tail -n 1`
 NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
 cd $NGINX_SOURCE
@@ -210,13 +211,13 @@ cut -d : -f 2-`
 ./configure --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 #這是動態模組
 #./configure --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
-#sudo make && sudo make DESTDIR=$DESTDIR install
+#sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #若是以後想要單獨編譯動態模組
 #重新跑一次configure，因為make clean會把Makefile清除
 #makeEnv
-#make modules && sudo make DESTDIR=$DESTDIR install
+#make modules && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #nginx.conf 內 載入 modules的方法
 #load_module modules/ngx_http_naxsi_module.so;
@@ -229,7 +230,7 @@ tar zxvf percona-server-5.7.19-17.tar.gz
 cd percona-server-5.7.19-17
 mkdir -p bld && cd bld/ && \
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql .. && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 makeEnv
 cd $WORKHOME
@@ -238,7 +239,7 @@ tar zxvf memcached-1.5.1.tar.gz
 cd memcached-1.5.1
 ./configure --prefix=/usr/local/webserver/memcached && \
 sudo make && \
-sudo make DESTDIR=$DESTDIR install
+sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝PHP 7.0.x
@@ -273,7 +274,7 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --with-bz2 --enable-soap && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install  && sudo make install clean
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
@@ -310,6 +311,7 @@ test -f "memcache-3.0.9.tgz" && \
 wget --no-check-certificate -N https://github.com/joetww/work_script/raw/master/memcache-3.0.9.tgz && \
 tar zxvf "memcache-3.0.9.tgz" && (
 cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && sudo make && sudo make DESTDIR=$DESTDIR install && \
+sudo make install clean && \
 sudo sh -c "echo 'extension=memcache.so' > $PHP_PATH/etc/php.d/memcache.ini"
 )
 
@@ -336,7 +338,7 @@ $PHP_PATH/bin/phpize && \
 ./configure \
 --with-php-config=$PHP_PATH/bin/php-config \
 --with-pgsql=/usr/local/webserver/pgsql && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝gearmand 
@@ -346,7 +348,8 @@ wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/down
 tar zxvf gearmand-1.1.17.tar.gz && \
 cd gearmand-1.1.17 && \
 ./configure --prefix=/usr/local/webserver/gearmand && \
-sudo make && sudo make DESTDIR=$DESTDIR install
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+
 #############################################
 #安裝php-gearman
 makeEnv
@@ -366,7 +369,8 @@ wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.1.tar
 tar zxvf redis-4.0.1.tar.gz
 cd redis-4.0.1 && \
 make PREFIX=/usr/local/webserver/redis && \
-sudo make PREFIX=/usr/local/webserver/redis install
+sudo make DESTDIR=$DESTDIR/usr/local/webserver/redis install && \
+sudo make PREFIX=/usr/local/webserver/redis install 
 
 #############################################
 
