@@ -126,6 +126,18 @@ tar zxvf openssl-1.0.2p.tar.gz && \
 cd openssl-1.0.2p && \
 ./config --prefix=/usr/local --openssldir=/usr/local/openssl && make 
 
+
+
+#############################################
+makeEnv
+cd $WORKHOME
+
+wget --no-check-certificate -N https://jaist.dl.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz && \
+tar zxvf boost_1_59_0.tar.gz && \
+cd boost_1_59_0 && \
+./bootstrap.sh
+sudo ./b2 --prefix=/usr/local install
+
 ##############################################
 ##安裝libpg
 #makeEnv
