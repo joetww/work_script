@@ -124,7 +124,7 @@ cd $WORKHOME
 wget --no-check-certificate -N https://www.openssl.org/source/openssl-1.0.2p.tar.gz && \
 tar zxvf openssl-1.0.2p.tar.gz && \
 cd openssl-1.0.2p && \
-./configure --prefix=/usr/local && make 
+./config --prefix=/usr/local --openssldir=/usr/local/openssl && make 
 
 ##############################################
 ##安裝libpg
