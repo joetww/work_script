@@ -149,7 +149,7 @@ sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=u
          -DDEFAULT_COLLATION=utf8_general_ci \
          -DDOWNLOAD_BOOST=1 \
          -DWITH_BOOST=/usr/local .. && \
-make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 
 ##############################################
