@@ -1,15 +1,19 @@
 ### Nginx+PHP+Percona編譯流程 ###
 ### wget -q https://raw.githubusercontent.com/joetww/work_script/master/install_Ngnix_PHP_Percona.sh -O - | bash
 #版本：
-#        nginx-1.13.4
-#        ruby-2.4.1(passenger所需)
-#        rubygems-2.6.12
-#        naxsi-0.55.3
-#        passenger-5.1.5
+#        nginx-1.13.4(編譯參數待確認)
+#        openresty-1.13.6.2(考慮一起裝)
+#        luarocks(給openresty用)
+#        https://github.com/GUI/lua-resty-auto-ssl(搭配luarocks)
+#        https://idoseek.com/1774(geoiplite2)
+#        ruby-2.4.1(passenger所需)(這版本不打算裝)
+#        rubygems-2.6.12(這版本不打算裝)
+#        naxsi-0.55.3(這版本不打算裝)
+#        passenger-5.1.5(這版本不打算裝)
 #        libmcrypt-2.5.8(mysql & php所需)
 #        libmemcached-1.0.18
 #        gearman-1.1.17
-#        boost_1.65.0(gearman所需)
+#        boost_1.65.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)
 #        postgresql-9.6.4(僅提供php & gearman的postgresql能力)
 #        percona-server-5.7.19-17(mysql)
 #        php 7.0.23
@@ -37,7 +41,7 @@ sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
-glibc-static gdbm-devel
+glibc-static gdbm-devel libmaxminddb libmaxminddb-devel
 
 #############################################
 function addString {
