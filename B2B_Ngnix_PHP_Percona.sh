@@ -37,7 +37,7 @@
 #正片開始
 #先準備 
 #############################################
-DESTDIR=/www/`date +%Y%m%d%H`
+export DESTDIR=/www/`date +%Y%m%d`
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
