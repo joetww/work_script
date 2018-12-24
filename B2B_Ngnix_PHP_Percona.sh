@@ -44,7 +44,7 @@ sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
 glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
-boost re2c GeoIP-devel libmemcached-devel
+boost boost-devel re2c GeoIP-devel libmemcached-devel 
 
 #############################################
 function addString {
@@ -120,7 +120,7 @@ function makeEnv {
 #make && sudo make INSTALL_ROOT=${DESTDIR} install && sudo make install clean
 
 ##############################################
-#安裝openssl 1.0.2p
+#安裝openssl 1.0.2p(給nginx用)
 makeEnv
 cd $WORKHOME 
 wget --no-check-certificate -N https://www.openssl.org/source/openssl-1.0.2p.tar.gz && \
@@ -163,7 +163,7 @@ sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=u
          -DDEFAULT_COLLATION=utf8_general_ci \
          -DDOWNLOAD_BOOST=1 \
          -DWITH_BOOST=/usr/local .. && \
-sudo make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
+sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝mysql(其實是安裝其分支 percona)
@@ -243,7 +243,7 @@ cd $NGINX_SOURCE
         --with-http_sub_module \
         --with-http_gzip_static_module --with-http_stub_status_module \
         --add-module=../ngx_http_geoip2_module && \
-gmake && sudo gmake INSTALL_ROOT=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
 wget --no-check-certificate -N https://openresty.org/download/openresty-1.13.6.2.tar.gz && \
@@ -254,7 +254,7 @@ cd openresty-1.13.6.2 && \
         --with-openssl=$WORKHOME/openssl-1.0.2p \
         --with-file-aio  --with-http_sub_module --with-http_gzip_static_module \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake && sudo gmake INSTALL_ROOT=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 ##############################################
 ##這裡先跳去準備安裝passenger，等一下會順便裝好nginx
@@ -322,8 +322,6 @@ gmake && sudo gmake INSTALL_ROOT=$DESTDIR install && sudo gmake install clean
 ##nginx.conf 內 載入 modules的方法
 ##load_module modules/ngx_http_naxsi_module.so;
 
-
-
 makeEnv
 cd $WORKHOME
 wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.12.tar.gz 
@@ -331,7 +329,7 @@ tar zxvf memcached-1.5.12.tar.gz
 cd memcached-1.5.12
 ./configure --prefix=/usr/local/webserver/memcached && \
 make && \
-sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
+sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝PHP 7.0.x
@@ -368,7 +366,8 @@ cd php-$PHP_VERSION && \
 --enable-zip --with-bz2 --enable-soap && \
 sudo make && sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make install && \
-sudo make install clean
+sudo make clean
+
 #############################################
 #假如不存在php.ini的話
 #先弄個預設的
@@ -452,30 +451,46 @@ cd $WORKHOME/ && \
 wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/download/1.1.18/gearmand-1.1.18.tar.gz
 tar zxvf gearmand-1.1.18.tar.gz && \
 cd gearmand-1.1.18 && \
-./configure --prefix=/usr/local/webserver/gearmand --with-mysql=$DESTDIR/usr/local/webserver/mysql/bin/mysql_config && \
-make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
+./configure --prefix=/usr/local/webserver/gearmand --with-mysql=/usr/local/webserver/mysql/bin/mysql_config && \
+make && \
+sudo make install && \
+sudo make DESTDIR=$DESTDIR install && \
+sudo make clean
 
 #############################################
 #安裝php-gearman
-makeEnv
-PECL_MODULE="gearman"
-sudo /usr/local/webserver/php/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
-sudo /usr/local/webserver/php/bin/pecl uninstall $PECL_MODULE
-sudo "PATH=$PATH" \
-bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
-        export GEARMAN_INC_DIR=/usr/local/webserver/gearmand/include && \
-        /usr/local/webserver/php/bin/pecl install gearman"
+# makeEnv
+# PECL_MODULE="gearman"
+# sudo /usr/local/webserver/php/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
+# sudo /usr/local/webserver/php/bin/pecl uninstall $PECL_MODULE
+# sudo "PATH=$PATH" \
+# bash -c "export GEARMAN_LIB_DIR=/usr/local/webserver/gearmand/lib && \
+        # export GEARMAN_INC_DIR=/usr/local/webserver/gearmand/include && \
+        # /usr/local/webserver/php/bin/pecl install gearman"
 
+makeEnv
+cd $WORKHOME/ && \
+wget --no-check-certificate -N https://github.com/wcgallego/pecl-gearman/archive/master.zip && \
+unzip master.zip && \
+cd pecl-gearman-master && \
+/usr/local/webserver/php/bin/phpize && \
+./configure --with-php-config=/usr/local/webserver/php/bin/php-config --with-gearman=/usr/local/webserver/gearmand && \
+make && \
+sudo make INSTALL_ROOT=$DESTDIR install && \
+sudo make install && \
+sudo make clean
+	
 #############################################
 #安裝redis
 makeEnv
 cd $WORKHOME/ && \
-wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.1.tar.gz
-tar zxvf redis-4.0.1.tar.gz
-cd redis-4.0.1 && \
+wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.12.tar.gz
+tar zxvf redis-4.0.12.tar.gz
+cd redis-4.0.12 && \
 make PREFIX=/usr/local/webserver/redis && \
-sudo make INSTALL_ROOT=$DESTDIR install && \
-sudo make PREFIX=/usr/local/webserver/redis install 
+sudo make PREFIX=$DESTDIR/usr/local/webserver/redis install && \
+sudo make PREFIX=/usr/local/webserver/redis install && \
+sudo make clean
 
 #############################################
 
@@ -490,7 +505,7 @@ sudo tar  \
 --exclude='./webserver/gearmand' \
 --exclude='./webserver/redis' \
 -zcvf /tmp/local_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ .
+-C $DESTDIR/usr/local/ .
 
 
 #nginx的打包
@@ -500,7 +515,8 @@ sudo tar --exclude='*.old' \
 --exclude='./webserver/nginx/html/*' \
 --exclude='./webserver/nginx/logs/*' \
 -zcvf /tmp/nginx_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/nginx ./webserver/ruby
+-C $DESTDIR/usr/local/ ./webserver/nginx
+
 #############################################
 #mysql的打包
 #預設的mysql設定檔位置
@@ -510,7 +526,7 @@ sudo tar \
 --exclude='./webserver/mysql/etc/*' \
 --exclude='./webserver/mysql/data/*' \
 -zcvf /tmp/${PROJOECT}_mysql_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/mysql
+-C $DESTDIR/usr/local/ ./webserver/mysql
 #############################################
 #gearmand打包
 sudo tar -zcvf /tmp/${PROJOECT}_gearmand_`date +%Y%m%d-%H`.tgz \
@@ -518,7 +534,8 @@ sudo tar -zcvf /tmp/${PROJOECT}_gearmand_`date +%Y%m%d-%H`.tgz \
 #############################################
 #redis打包
 sudo tar -zcvf /tmp/${PROJOECT}_redis_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/redis
+-C $DESTDIR/usr/local/ ./webserver/redis
+
 #############################################
 #php 5.6.30的打包
 #預設設定檔位置
@@ -529,6 +546,6 @@ sudo tar -zcvf /tmp/${PROJOECT}_redis_`date +%Y%m%d-%H`.tgz \
 #壓縮包內排除etc目錄內的所有設定檔，要自行從舊的複製出來，
 makeEnv
 sudo tar \
---exclude='./webserver/php7_0_*/etc/*' \
--zcvf /tmp/${PROJOECT}_`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`_`date +%Y%m%d-%H`.tgz \
--C /usr/local/ ./webserver/`ls  /usr/local/webserver/ | grep php7_0 | sort -V | tail -n 1`
+--exclude='./webserver/php/etc/*' \
+-zcvf /tmp/${PROJOECT}_php_`date +%Y%m%d-%H`.tgz \
+-C $DESTDIR/usr/local/ ./webserver/php
