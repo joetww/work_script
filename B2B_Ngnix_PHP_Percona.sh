@@ -14,7 +14,7 @@
 #        libmcrypt-2.5.8(mysql & php所需)(yum就有了，所以不自己編譯了)
 #        libmemcached-1.0.18
 #        gearman-1.1.18
-#        boost_1.59.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)
+#        boost_1.59.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)/改用yum安裝
 #        postgresql-9.6.4(僅提供php & gearman的postgresql能力)(這版本不打算裝)
 #        percona-server-5.7.19-17(mysql)
 #        php 7.0.23
@@ -39,10 +39,11 @@
 #############################################
 export DESTDIR=/www/`date +%Y%m%d`
 sudo yum -y groupinstall "Development tools"
-sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
+sudo yum -y install epel-release wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
-glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt
+glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
+boost
 
 #############################################
 function addString {
@@ -129,14 +130,14 @@ cd openssl-1.0.2p && \
 
 
 #############################################
-makeEnv
-cd $WORKHOME
-
-wget --no-check-certificate -N https://jaist.dl.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz && \
-tar zxvf boost_1_59_0.tar.gz && \
-cd boost_1_59_0 && \
-./bootstrap.sh
-sudo ./b2 --prefix=/usr/local install
+#makeEnv
+#cd $WORKHOME
+#
+#wget --no-check-certificate -N https://jaist.dl.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz && \
+#tar zxvf boost_1_59_0.tar.gz && \
+#cd boost_1_59_0 && \
+#./bootstrap.sh
+#sudo ./b2 --prefix=/usr/local install
 
 ##############################################
 ##安裝libpg
