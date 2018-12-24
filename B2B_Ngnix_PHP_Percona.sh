@@ -12,7 +12,7 @@
 #        naxsi-0.55.3(這版本不打算裝)
 #        passenger-5.1.5(這版本不打算裝)
 #        libmcrypt-2.5.8(mysql & php所需)(yum就有了，所以不自己編譯了)/改用yum安裝
-#        libmemcached-1.0.18
+#        libmemcached-1.0.18/改用yum安裝
 #        gearman-1.1.18
 #        boost_1.59.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)/改用yum安裝
 #        postgresql-9.6.4(僅提供php & gearman的postgresql能力)(這版本不打算裝)
@@ -44,7 +44,7 @@ sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
 glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
-boost re2c
+boost re2c GeoIP-devel libmemcached-devel
 
 #############################################
 function addString {
@@ -111,13 +111,13 @@ function makeEnv {
 
 #############################################
 #安裝libmemcached-1.0.18
-makeEnv
-cd $WORKHOME
-wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
-tar zxvf libmemcached-1.0.18.tar.gz
-cd libmemcached-1.0.18 && \
-./configure --prefix=/usr/local && \
-make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
+#makeEnv
+#cd $WORKHOME
+#wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
+#tar zxvf libmemcached-1.0.18.tar.gz
+#cd libmemcached-1.0.18 && \
+#./configure --prefix=/usr/local && \
+#make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
 
 ##############################################
 #安裝openssl 1.0.2p
@@ -421,6 +421,7 @@ sudo sh -c "echo 'extension=memcache.so' > $DESTDIR/usr/local/webserver/php/etc/
 #php5只能支援到pecl-memcached 2.x，但是php7支援到pecl-memcached 3
 makeEnv
 sudo mkdir -p /usr/local/webserver/php/etc/php.d/
+sudo mkdir -p $DESTDIR/usr/local/webserver/php/etc/php.d/
 PECL_MODULE="memcached-3.0.3"
 sudo /usr/local/webserver/php/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
 sudo /usr/local/webserver/php/bin/pecl uninstall $PECL_MODULE
@@ -430,7 +431,9 @@ expect "libmemcached directory"
 send "\r"
 expect eof
 EOD
+cp /usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/memcached.so $DESTDIR/usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/memcached.so
 sudo sh -c "echo 'extension=memcached.so' > /usr/local/webserver/php/etc/php.d/memcached.ini"
+sudo sh -c "echo 'extension=memcached.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/memcached.ini"
 
 ##############################################
 ##安裝php-pgsql
