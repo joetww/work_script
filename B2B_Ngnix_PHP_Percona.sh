@@ -404,13 +404,17 @@ $DESTDIR/usr/local/webserver/php/etc/php.ini
 #安裝php-memcache
 makeEnv
 sudo mkdir -p /usr/local/webserver/php/etc/php.d/
+sudo mkdir -p $DESTDIR/usr/local/webserver/php/etc/php.d/
 cd $WORKHOME
-test -f "memcache-3.0.9.tgz" && \
+test \! -f "memcache-3.0.9.tgz" && \
 wget --no-check-certificate -N https://github.com/joetww/work_script/raw/master/memcache-3.0.9.tgz && \
 tar zxvf "memcache-3.0.9.tgz" && (
-cd memcache-3.0.9 && $PHP_PATH/bin/phpize && ./configure --enable-memcache && make && sudo make DESTDIR=$DESTDIR install && \
+cd memcache-3.0.9 && /usr/local/webserver/php/bin/phpize && \
+./configure --with-php-config=/usr/local/webserver/php/bin/php-config --enable-memcache && \
+make && sudo make DESTDIR=$DESTDIR install && \
 sudo make install clean && \
-sudo sh -c "echo 'extension=memcache.so' > /usr/local/webserver/php/etc/php.d/memcache.ini"
+sudo sh -c "echo 'extension=memcache.so' > /usr/local/webserver/php/etc/php.d/memcache.ini" && \
+sudo sh -c "echo 'extension=memcache.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/memcache.ini"
 )
 
 #############################################
