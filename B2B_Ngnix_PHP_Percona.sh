@@ -218,18 +218,31 @@ sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 makeEnv
 cd $WORKHOME
 git clone --recursive https://github.com/leev/ngx_http_geoip2_module
-wget --no-check-certificate -N https://nginx.org/download/nginx-1.13.12.tar.gz
-tar zxvf `find ~/work -maxdepth 1 -type f -name "nginx*" | sort -V | tail -n 1`
-NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
+wget --no-check-certificate -N https://nginx.org/download/nginx-1.14.2.tar.gz
+tar zxvf `find ${WORKHOME} -maxdepth 1 -type f -name "nginx*" | sort -V | tail -n 1`
+NGINX_SOURCE=`find ${WORKHOME} -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
 cd $NGINX_SOURCE
 #nginx的編譯設定要補
-./configure --prefix=/usr/local/webserver/nginx --with-http_geoip_module \
+./configure --prefix=/usr/local/webserver/nginx \
+        --with-http_geoip_module=dynamic \
+        --with-http_ssl_module \
+        --with-cc-opt=-Wno-error \
+        --with-http_v2_module \
         --with-http_realip_module \
-        --with-openssl=$WORKHOME/openssl-1.0.2p \
+        --with-http_auth_request_module \
+        --http-client-body-temp-path=./client_temp \
+        --http-proxy-temp-path=./proxy_temp \
+        --http-fastcgi-temp-path=./fastcgi_temp \
+        --http-uwsgi-temp-path=./uwsgi_temp \
+        --http-scgi-temp-path=./scgi_temp \
+        --modules-path=./modules \
+        --with-stream_realip_module \
+        --with-stream_geoip_module \
+        --with-openssl=../openssl-1.0.2p \
         --with-file-aio  \
         --with-http_sub_module \
         --with-http_gzip_static_module --with-http_stub_status_module \
-        --add-module=$WORKHOME/ngx_http_geoip2_module && \
+        --add-module=../ngx_http_geoip2_module && \
 gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
@@ -313,9 +326,9 @@ gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.1.tar.gz 
-tar zxvf memcached-1.5.1.tar.gz
-cd memcached-1.5.1
+wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.12.tar.gz 
+tar zxvf memcached-1.5.12.tar.gz
+cd memcached-1.5.12
 ./configure --prefix=/usr/local/webserver/memcached && \
 make && \
 sudo make DESTDIR=$DESTDIR install && sudo make install clean
