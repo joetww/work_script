@@ -37,7 +37,7 @@
 #正片開始
 #先準備 
 #############################################
-export DESTDIR=/www/`date +%Y%m%d`
+DESTDIR=/www/`date +%Y%m%d`
 sudo yum -y install epel-release
 sudo yum -y groupinstall "Development tools"
 sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
@@ -117,7 +117,7 @@ function makeEnv {
 #tar zxvf libmemcached-1.0.18.tar.gz
 #cd libmemcached-1.0.18 && \
 #./configure --prefix=/usr/local && \
-#make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
+#make && sudo make INSTALL_ROOT=${DESTDIR} install && sudo make install clean
 
 ##############################################
 #安裝openssl 1.0.2p
@@ -148,7 +148,7 @@ cd openssl-1.0.2p && \
 #tar zxvf postgresql-9.6.4.tar.gz
 #cd postgresql-9.6.4 && \
 #./configure --prefix=/usr/local/webserver/pgsql && \
-#make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+#make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝mysql(其實是安裝其分支 percona)
@@ -163,7 +163,7 @@ sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=u
          -DDEFAULT_COLLATION=utf8_general_ci \
          -DDOWNLOAD_BOOST=1 \
          -DWITH_BOOST=/usr/local .. && \
-sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+sudo make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝mysql(其實是安裝其分支 percona)
@@ -178,7 +178,7 @@ sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #         -DDEFAULT_COLLATION=utf8_general_ci \
 #         -DDOWNLOAD_BOOST=1 \
 #         -DWITH_BOOST=/usr/local .. && \
-#sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+#sudo make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 
 ##############################################
@@ -243,7 +243,7 @@ cd $NGINX_SOURCE
         --with-http_sub_module \
         --with-http_gzip_static_module --with-http_stub_status_module \
         --add-module=../ngx_http_geoip2_module && \
-gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake INSTALL_ROOT=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
 wget --no-check-certificate -N https://openresty.org/download/openresty-1.13.6.2.tar.gz && \
@@ -254,7 +254,7 @@ cd openresty-1.13.6.2 && \
         --with-openssl=$WORKHOME/openssl-1.0.2p \
         --with-file-aio  --with-http_sub_module --with-http_gzip_static_module \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake INSTALL_ROOT=$DESTDIR install && sudo gmake install clean
 
 ##############################################
 ##這裡先跳去準備安裝passenger，等一下會順便裝好nginx
@@ -311,13 +311,13 @@ gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 #./configure --add-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
 ##這是動態模組
 ##./configure --add-dynamic-module=$NAXSI_PATH/naxsi_src $CONFIG_ARG
-##sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+##sudo make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 ##############################################
 ##若是以後想要單獨編譯動態模組
 ##重新跑一次configure，因為make clean會把Makefile清除
 ##makeEnv
-##make modules && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+##make modules && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 ##nginx.conf 內 載入 modules的方法
 ##load_module modules/ngx_http_naxsi_module.so;
@@ -331,7 +331,7 @@ tar zxvf memcached-1.5.12.tar.gz
 cd memcached-1.5.12
 ./configure --prefix=/usr/local/webserver/memcached && \
 make && \
-sudo make DESTDIR=$DESTDIR install && sudo make install clean
+sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝PHP 7.0.x
@@ -411,7 +411,7 @@ wget --no-check-certificate -N https://github.com/joetww/work_script/raw/master/
 tar zxvf "memcache-3.0.9.tgz" && (
 cd memcache-3.0.9 && /usr/local/webserver/php/bin/phpize && \
 ./configure --with-php-config=/usr/local/webserver/php/bin/php-config --enable-memcache && \
-make && sudo make DESTDIR=$DESTDIR install && \
+make && sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make install clean && \
 sudo sh -c "echo 'extension=memcache.so' > /usr/local/webserver/php/etc/php.d/memcache.ini" && \
 sudo sh -c "echo 'extension=memcache.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/memcache.ini"
@@ -443,7 +443,7 @@ sudo sh -c "echo 'extension=memcached.so' > $DESTDIR/usr/local/webserver/php/etc
 #./configure \
 #--with-php-config=$PHP_PATH/bin/php-config \
 #--with-pgsql=/usr/local/webserver/pgsql && \
-#sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+#sudo make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝gearmand 
@@ -452,8 +452,8 @@ cd $WORKHOME/ && \
 wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/download/1.1.18/gearmand-1.1.18.tar.gz
 tar zxvf gearmand-1.1.18.tar.gz && \
 cd gearmand-1.1.18 && \
-./configure --prefix=/usr/local/webserver/gearmand && \
-make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+./configure --prefix=/usr/local/webserver/gearmand --with-mysql=$DESTDIR/usr/local/webserver/mysql/bin/mysql_config && \
+make && sudo make INSTALL_ROOT=$DESTDIR install && sudo make install clean
 
 #############################################
 #安裝php-gearman
@@ -474,7 +474,7 @@ wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.1.tar
 tar zxvf redis-4.0.1.tar.gz
 cd redis-4.0.1 && \
 make PREFIX=/usr/local/webserver/redis && \
-sudo make DESTDIR=$DESTDIR install && \
+sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make PREFIX=/usr/local/webserver/redis install 
 
 #############################################
