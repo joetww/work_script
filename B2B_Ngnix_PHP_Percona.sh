@@ -366,8 +366,8 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --with-bz2 --enable-soap && \
-sudo make && sudo make DESTDIR=$DESTDIR/$PHP_PATH install && \
-sudo make DESTDIR=/usr/local/webserver/php install && \
+sudo make && sudo make INSTALL_ROOT=$DESTDIR install && \
+sudo make install && \
 sudo make install clean
 #############################################
 #假如不存在php.ini的話
@@ -377,22 +377,26 @@ test \! -f /usr/local/webserver/php/etc/php.ini && \
 sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
 /usr/local/webserver/php/etc/php.ini
 
-/usr/local/webserver/php/bin/pear version || (
-#安裝pear
-makeEnv
-cd $WORKHOME/ && \
-wget --no-check-certificate -N http://pear.php.net/go-pear.phar
-sudo expect << EOD
-spawn /usr/local/webserver/php/bin/php go-pear.phar
-expect "or Enter to continue:"
-send "\r"
-expect "Would you like to alter php.ini"
-send "\r"
-expect "Press Enter to continue:"
-send "\r"
-expect eof
-EOD
-)
+test \! -f $DESTDIR/usr/local/webserver/php/etc/php.ini && \
+sudo cp $WORKHOME/php-$PHP_VERSION/php.ini-production \
+$DESTDIR/usr/local/webserver/php/etc/php.ini
+
+#/usr/local/webserver/php/bin/pear version || (
+##安裝pear
+#makeEnv
+#cd $WORKHOME/ && \
+#wget --no-check-certificate -N http://pear.php.net/go-pear.phar
+#sudo expect << EOD
+#spawn /usr/local/webserver/php/bin/php go-pear.phar
+#expect "or Enter to continue:"
+#send "\r"
+#expect "Would you like to alter php.ini"
+#send "\r"
+#expect "Press Enter to continue:"
+#send "\r"
+#expect eof
+#EOD
+#)
 
 #會修改 include_path 要跟著修改
 
