@@ -66,7 +66,7 @@ function makeEnv {
         WORKHOME=~/work/
         
         PROJOECT="B2B"
-        NGINX_SOURCE=`find ~/work -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
+        NGINX_SOURCE=`find ${WORKHOME} -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
         test -z ${PHP_VERSION+x} && echo "SET PHP_VERSION" && \
         PHP_VERSION=`curl -s http://php.net/downloads.php | \
         grep -P '<h3 id="v7\.0\.\d+" class="title">' | \
@@ -90,14 +90,14 @@ function makeEnv {
 
 #############################################
 #安裝re2c
-makeEnv
-cd $WORKHOME 
-wget --no-check-certificate -N https://github.com/skvadrik/re2c/releases/download/0.16/re2c-0.16.tar.gz
-tar zxvf re2c-0.16.tar.gz && \
-cd re2c-0.16 && \
-./configure && \
-make && \
-sudo make install clean
+#makeEnv
+#cd $WORKHOME 
+#wget --no-check-certificate -N https://github.com/skvadrik/re2c/releases/download/0.16/re2c-0.16.tar.gz
+#tar zxvf re2c-0.16.tar.gz && \
+#cd re2c-0.16 && \
+#./configure && \
+#make && \
+#sudo make install clean
 
 ##############################################
 ##安裝libmcrypt 2.5.8
@@ -117,7 +117,7 @@ wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+do
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
 ./configure --prefix=/usr/local && \
-make && sudo make install clean
+make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
 
 ##############################################
 #安裝openssl 1.0.2p
