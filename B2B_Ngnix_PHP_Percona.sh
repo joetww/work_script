@@ -11,7 +11,7 @@
 #        rubygems-2.6.12(這版本不打算裝)
 #        naxsi-0.55.3(這版本不打算裝)
 #        passenger-5.1.5(這版本不打算裝)
-#        libmcrypt-2.5.8(mysql & php所需)(yum就有了，所以不自己編譯了)
+#        libmcrypt-2.5.8(mysql & php所需)(yum就有了，所以不自己編譯了)/改用yum安裝
 #        libmemcached-1.0.18
 #        gearman-1.1.18
 #        boost_1.59.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)/改用yum安裝
@@ -21,7 +21,7 @@
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
 #        php-gearman-1.1.2
-#        re2c 0.16(提供較好的configure能力)
+#        re2c 0.16(提供較好的configure能力)/改用yum安裝
 #        redis 4.0.1
 #注意：
 #        WORKHOME & NAXSI_PATH & PHP_VERSION & PHP_PATH 使用時別忘記要確認
@@ -38,12 +38,13 @@
 #先準備 
 #############################################
 export DESTDIR=/www/`date +%Y%m%d`
+sudo yum -y install epel-release
 sudo yum -y groupinstall "Development tools"
-sudo yum -y install epel-release wget zlib-devel openssl-devel curl-devel pcre-devel \
+sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
 glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
-boost
+boost re2c
 
 #############################################
 function addString {
