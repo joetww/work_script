@@ -16,7 +16,7 @@
 #        gearman-1.1.18
 #        boost_1.59.0(gearman所需)(待確認，因為percona 反而不需要這麼高的版本)/改用yum安裝
 #        postgresql-9.6.4(僅提供php & gearman的postgresql能力)(這版本不打算裝)
-#        percona-server-5.7.19-17(mysql)
+#        percona-server-5.7.19-17(mysql)/不用喔，換回原本的mysql
 #        php 7.0.23
 #        php-memcache-2.2.7
 #        php-memcached-2.2.0
@@ -150,21 +150,35 @@ cd openssl-1.0.2p && \
 #./configure --prefix=/usr/local/webserver/pgsql && \
 #make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
-
 #############################################
 #安裝mysql(其實是安裝其分支 percona)
 makeEnv
 cd $WORKHOME
-wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.19-17/source/tarball/percona-server-5.7.19-17.tar.gz
-tar zxvf percona-server-5.7.19-17.tar.gz
-cd percona-server-5.7.19-17
+wget --no-check-certificate -N https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.24.tar.gz
+tar zxvf mysql-5.7.24.tar.gz
+cd mysql-5.7.24
 mkdir -p bld && cd bld/ && \
 sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=utf8 \
-         -DINSTALL_MYSQLTESTDIR=
+         -DINSTALL_MYSQLTESTDIR= \
          -DDEFAULT_COLLATION=utf8_general_ci \
          -DDOWNLOAD_BOOST=1 \
          -DWITH_BOOST=/usr/local .. && \
 sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
+
+#############################################
+#安裝mysql(其實是安裝其分支 percona)
+#makeEnv
+#cd $WORKHOME
+#wget --no-check-certificate -N https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.19-17/source/tarball/percona-server-5.7.19-17.tar.gz
+#tar zxvf percona-server-5.7.19-17.tar.gz
+#cd percona-server-5.7.19-17
+#mkdir -p bld && cd bld/ && \
+#sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local/webserver/mysql -DDEFAULT_CHARSET=utf8 \
+#         -DINSTALL_MYSQLTESTDIR= \
+#         -DDEFAULT_COLLATION=utf8_general_ci \
+#         -DDOWNLOAD_BOOST=1 \
+#         -DWITH_BOOST=/usr/local .. && \
+#sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 
 ##############################################
