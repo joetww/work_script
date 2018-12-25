@@ -234,20 +234,20 @@ cd $NGINX_SOURCE
         --with-http_v2_module \
         --with-http_realip_module \
         --with-http_auth_request_module \
-        --http-client-body-temp-path=./client_temp \
-        --http-proxy-temp-path=./proxy_temp \
-        --http-fastcgi-temp-path=./fastcgi_temp \
-        --http-uwsgi-temp-path=./uwsgi_temp \
-        --http-scgi-temp-path=./scgi_temp \
-        --modules-path=./modules \
+        --http-client-body-temp-path=/usr/local/webserver/nginx/client_temp \
+        --http-proxy-temp-path=/usr/local/webserver/nginx/proxy_temp \
+        --http-fastcgi-temp-path=/usr/local/webserver/nginx/fastcgi_temp \
+        --http-uwsgi-temp-path=/usr/local/webserver/nginx/uwsgi_temp \
+        --http-scgi-temp-path=/usr/local/webserver/nginx/scgi_temp \
+        --modules-path=/usr/local/webserver/nginx/modules \
         --with-stream_realip_module \
         --with-stream_geoip_module \
         --with-openssl=$WORKHOME/$OPENSSL_VERSION \
         --with-file-aio  \
         --with-http_sub_module \
         --with-http_gzip_static_module --with-http_stub_status_module \
-		--add-module=../ngx_cache_purge \
-        --add-module=../ngx_http_geoip2_module && \
+		--add-module=$WORKHOME/ngx_cache_purge \
+        --add-module=$WORKHOME/ngx_http_geoip2_module && \
 gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
@@ -259,9 +259,13 @@ cd openresty-1.13.6.2 && \
         --with-openssl=$WORKHOME/$OPENSSL_VERSION \
         --with-file-aio  --with-http_sub_module --with-http_gzip_static_module \
 		--with-http_auth_request_module --with-http_v2_module \
-		--http-client-body-temp-path=./client_temp --http-proxy-temp-path=./proxy_temp \
-		--http-fastcgi-temp-path=./fastcgi_temp --http-uwsgi-temp-path=./uwsgi_temp \
-		--http-scgi-temp-path=./scgi_temp --modules-path=./modules --add-module=../ngx_cache_purge \
+        --http-client-body-temp-path=/usr/local/webserver/nginx/client_temp \
+        --http-proxy-temp-path=/usr/local/webserver/nginx/proxy_temp \
+        --http-fastcgi-temp-path=/usr/local/webserver/nginx/fastcgi_temp \
+        --http-uwsgi-temp-path=/usr/local/webserver/nginx/uwsgi_temp \
+        --http-scgi-temp-path=/usr/local/webserver/nginx/scgi_temp \
+        --modules-path=/usr/local/webserver/nginx/modules \
+		--add-module=$WORKHOME/ngx_cache_purge \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
 gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
