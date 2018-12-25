@@ -72,6 +72,7 @@ function makeEnv {
         grep -P '<h3 id="v7\.0\.\d+" class="title">' | \
         sed -n 's/.*\(7.0.[0-9]\+\).*/\1/p'`
         PHP_PATH=/usr/local/webserver/php`echo $PHP_VERSION | sed 's/\./_/g'`
+		OPENSSL_VERSION=`find $WORKHOME -type d -name "openssl*" -print | grep -Po 'openssl-\d+\.\d+\.\d+\w' | sort -u -V -r | head -n 1`
         sudo mkdir -p $WORKHOME
         sudo mkdir -p $DESTDIR
         
@@ -123,9 +124,9 @@ function makeEnv {
 #安裝openssl 1.0.2p(給nginx用)
 makeEnv
 cd $WORKHOME 
-wget --no-check-certificate -N https://www.openssl.org/source/openssl-1.0.2p.tar.gz && \
-tar zxvf openssl-1.0.2p.tar.gz && \
-cd openssl-1.0.2p && \
+wget --no-check-certificate -N https://www.openssl.org/source/openssl-1.1.0j.tar.gz && \
+tar zxvf openssl-1.1.0j.tar.gz && \
+cd openssl-1.1.0j && \
 ./config --prefix=/usr/local --openssldir=/usr/local/openssl && make 
 
 
@@ -213,11 +214,14 @@ sudo make && sudo make DESTDIR=$DESTDIR install && sudo make install clean
 #sudo "PATH=$PATH" /usr/local/webserver/ruby/bin/ruby setup.rb
 
 
+
+
 #############################################
 #先抓好nginx source code
 makeEnv
 cd $WORKHOME
 git clone --recursive https://github.com/leev/ngx_http_geoip2_module
+git clone --recursive https://github.com/FRiCKLE/ngx_cache_purge
 wget --no-check-certificate -N https://nginx.org/download/nginx-1.14.2.tar.gz
 tar zxvf `find ${WORKHOME} -maxdepth 1 -type f -name "nginx*" | sort -V | tail -n 1`
 NGINX_SOURCE=`find ${WORKHOME} -maxdepth 1 -type d -name "nginx*" | sort -V | tail -n 1`
@@ -238,10 +242,11 @@ cd $NGINX_SOURCE
         --modules-path=./modules \
         --with-stream_realip_module \
         --with-stream_geoip_module \
-        --with-openssl=../openssl-1.0.2p \
+        --with-openssl=$WORKHOME/$OPENSSL_VERSION \
         --with-file-aio  \
         --with-http_sub_module \
         --with-http_gzip_static_module --with-http_stub_status_module \
+		--add-module=../ngx_cache_purge \
         --add-module=../ngx_http_geoip2_module && \
 gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
@@ -251,8 +256,12 @@ tar zxvf openresty-1.13.6.2.tar.gz && \
 cd openresty-1.13.6.2 && \
 ./configure --prefix=/usr/local/webserver/openresty --with-cc-opt=-O2 \
         --with-http_geoip_module --with-http_realip_module \
-        --with-openssl=$WORKHOME/openssl-1.0.2p \
+        --with-openssl=$WORKHOME/$OPENSSL_VERSION \
         --with-file-aio  --with-http_sub_module --with-http_gzip_static_module \
+		--with-http_auth_request_module --with-http_v2_module \
+		--http-client-body-temp-path=./client_temp --http-proxy-temp-path=./proxy_temp \
+		--http-fastcgi-temp-path=./fastcgi_temp --http-uwsgi-temp-path=./uwsgi_temp \
+		--http-scgi-temp-path=./scgi_temp --modules-path=./modules --add-module=../ngx_cache_purge \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
 gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
@@ -492,6 +501,25 @@ sudo make PREFIX=$DESTDIR/usr/local/webserver/redis install && \
 sudo make PREFIX=/usr/local/webserver/redis install && \
 sudo make clean
 
+
+makeEnv
+sudo mkdir -p /usr/local/webserver/php/etc/php.d/
+sudo mkdir -p $DESTDIR/usr/local/webserver/php/etc/php.d/
+PECL_MODULE="redis"
+sudo /usr/local/webserver/php/bin/pecl info $PECL_MODULE 2>&1 > /dev/null && \
+sudo /usr/local/webserver/php/bin/pecl uninstall $PECL_MODULE
+sudo expect << EOD
+spawn /usr/local/webserver/php/bin/pecl install $PECL_MODULE
+expect "enable igbinary serializer support"
+send "\r"
+expect "enable lzf compression support"
+send "\r"
+expect eof
+EOD
+
+cp /usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/redis.so $DESTDIR/usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/redis.so
+sudo sh -c "echo 'extension=redis.so' > /usr/local/webserver/php/etc/php.d/redis.ini"
+sudo sh -c "echo 'extension=redis.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/redis.ini"
 #############################################
 
 #打包
