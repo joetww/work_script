@@ -44,7 +44,7 @@ sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
 glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
-boost boost-devel re2c GeoIP-devel libmemcached-devel 
+boost boost-devel re2c GeoIP-devel
 
 #############################################
 function addString {
@@ -112,13 +112,13 @@ function makeEnv {
 
 #############################################
 #安裝libmemcached-1.0.18
-#makeEnv
-#cd $WORKHOME
-#wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
-#tar zxvf libmemcached-1.0.18.tar.gz
-#cd libmemcached-1.0.18 && \
-#./configure --prefix=/usr/local && \
-#make && sudo make INSTALL_ROOT=${DESTDIR} install && sudo make install clean
+makeEnv
+cd $WORKHOME
+wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
+tar zxvf libmemcached-1.0.18.tar.gz
+cd libmemcached-1.0.18 && \
+./configure --prefix=/usr/local && \
+make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
 
 ##############################################
 #安裝openssl 1.0.2p(給nginx用)
@@ -492,6 +492,8 @@ make && \
 sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make install && \
 sudo make clean
+sudo sh -c "echo 'extension=gearman.so' > /usr/local/webserver/php/etc/php.d/gearman.ini"
+sudo sh -c "echo 'extension=gearman.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/gearman.ini"
 	
 #############################################
 #安裝redis
@@ -525,6 +527,9 @@ cp /usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/redis.s
 sudo sh -c "echo 'extension=redis.so' > /usr/local/webserver/php/etc/php.d/redis.ini"
 sudo sh -c "echo 'extension=redis.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/redis.ini"
 #############################################
+
+sudo sh -c "echo 'zend_extension=opcache.so' > /usr/local/webserver/php/etc/php.d/opcache.ini"
+sudo sh -c "echo 'zend_extension=opcache.so' > $DESTDIR/usr/local/webserver/php/etc/php.d/opcache.ini"
 
 #打包
 makeEnv
