@@ -263,7 +263,7 @@ cd $NGINX_SOURCE
         --with-http_gzip_static_module --with-http_stub_status_module \
 		--add-module=$WORKHOME/ngx_cache_purge \
         --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake CFLAGS="-static" EXEEXT="-static" && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
 wget --no-check-certificate -N https://openresty.org/download/openresty-1.13.6.2.tar.gz && \
@@ -282,7 +282,7 @@ cd openresty-1.13.6.2 && \
         --modules-path=/usr/local/webserver/nginx/modules \
 		--add-module=$WORKHOME/ngx_cache_purge \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake CFLAGS="-static" EXEEXT="-static" && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 ##############################################
 ##這裡先跳去準備安裝passenger，等一下會順便裝好nginx
@@ -356,7 +356,7 @@ wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.12.t
 tar zxvf memcached-1.5.12.tar.gz
 cd memcached-1.5.12
 ./configure --prefix=/usr/local/webserver/memcached && \
-make && \
+make CFLAGS="-static" EXEEXT="-static" && \
 sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
@@ -392,7 +392,7 @@ cd php-$PHP_VERSION && \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
 --enable-zip --with-bz2 --enable-soap && \
-sudo make && sudo make INSTALL_ROOT=$DESTDIR install && \
+sudo make CFLAGS="-static" EXEEXT="-static" && sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make install && \
 sudo make clean
 
@@ -480,7 +480,7 @@ wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/down
 tar zxvf gearmand-1.1.18.tar.gz && \
 cd gearmand-1.1.18 && \
 ./configure --prefix=/usr/local/webserver/gearmand --with-mysql=/usr/local/webserver/mysql/bin/mysql_config && \
-make && \
+make CFLAGS="-static" EXEEXT="-static" && \
 sudo make install && \
 sudo make DESTDIR=$DESTDIR install && \
 sudo make clean
@@ -517,9 +517,9 @@ cd $WORKHOME/ && \
 wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.12.tar.gz
 tar zxvf redis-4.0.12.tar.gz
 cd redis-4.0.12 && \
-make PREFIX=/usr/local/webserver/redis && \
-sudo make PREFIX=$DESTDIR/usr/local/webserver/redis install && \
-sudo make PREFIX=/usr/local/webserver/redis install && \
+make CFLAGS="-static" EXEEXT="-static" PREFIX=/usr/local/webserver/redis && \
+sudo make CFLAGS="-static" EXEEXT="-static" PREFIX=$DESTDIR/usr/local/webserver/redis install && \
+sudo make CFLAGS="-static" EXEEXT="-static" PREFIX=/usr/local/webserver/redis install && \
 sudo make clean
 
 
