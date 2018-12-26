@@ -40,11 +40,18 @@
 DESTDIR=/www/`date +%Y%m%d`
 sudo yum -y install epel-release
 sudo yum -y groupinstall "Development tools"
-sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
-readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
-freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
-glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
-boost boost-devel re2c GeoIP-devel
+sudo yum -y install wget zlib-devel curl-devel pcre-devel \
+readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2-libs bzip2-devel \
+freetype-devel openldap-devel cmake expect gperf libuuid-devel \
+glibc-static gdbm-devel libmaxminddb-devel \
+boost-devel re2c GeoIP-devel 
+
+
+#sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
+#readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2 bzip2-libs bzip2-devel \
+#freetype-devel openldap-devel cmake expect gperf libevent-devel libuuid-devel \
+#glibc-static gdbm-devel libmaxminddb libmaxminddb-devel libmcrypt-devel libmcrypt \
+#boost boost-devel re2c GeoIP-devel libmemcached-devel 
 
 #############################################
 function addString {
@@ -102,13 +109,13 @@ function makeEnv {
 
 ##############################################
 ##安裝libmcrypt 2.5.8
-#makeEnv
-#cd $WORKHOME 
-#wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
-#tar zxvf libmcrypt-2.5.8.tar.gz
-#cd libmcrypt-2.5.8
-#./configure --prefix=/usr/local && \
-#make && sudo make install clean
+makeEnv
+cd $WORKHOME 
+wget --no-check-certificate -N https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz
+tar zxvf libmcrypt-2.5.8.tar.gz
+cd libmcrypt-2.5.8
+./configure --prefix=/usr/local && \
+make && sudo make install clean
 
 #############################################
 #安裝libmemcached-1.0.18
@@ -117,6 +124,14 @@ cd $WORKHOME
 wget --no-check-certificate -N https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz
 tar zxvf libmemcached-1.0.18.tar.gz
 cd libmemcached-1.0.18 && \
+./configure --prefix=/usr/local && \
+make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
+
+makeEnv
+cd $WORKHOME
+wget --no-check-certificate -N https://github.com/libevent/libevent/archive/release-1.4.15-stable.tar.gz
+tar zxvf release-1.4.15-stable.tar.gz
+cd libevent-release-1.4.15-stable
 ./configure --prefix=/usr/local && \
 make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
 
