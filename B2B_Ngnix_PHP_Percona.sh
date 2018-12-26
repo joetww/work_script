@@ -605,3 +605,12 @@ sudo tar \
 --exclude='./webserver/php/etc/*' \
 -zcvf /tmp/${PROJOECT}_php_`date +%Y%m%d-%H`.tgz \
 -C $DESTDIR/usr/local/ ./webserver/php
+
+
+tar zcvf ~/webserver_`cat /etc/redhat-release | grep -Po '\d+\.\d+'`.`date +%Y%m%d`.tgz \
+	-C ${DESTDIR} \
+	usr/ \
+	/etc/ld.so.conf.d/local.conf \
+	/usr/local/webserver/php/lib/php/extensions/no-debug-non-zts-20151012/
+
+
