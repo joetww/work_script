@@ -40,7 +40,7 @@
 DESTDIR=/www/`date +%Y%m%d`
 sudo yum -y install epel-release
 sudo yum -y groupinstall "Development tools"
-sudo yum -y install wget zlib-devel curl-devel pcre-devel \
+sudo yum -y install wget zlib-devel openssl-devel curl-devel pcre-devel \
 readline-devel libxml2-devel libjpeg-turbo-devel libpng-devel bzip2-libs bzip2-devel \
 freetype-devel openldap-devel cmake expect gperf libuuid-devel \
 glibc-static gdbm-devel libmaxminddb-devel \
@@ -264,7 +264,7 @@ cd $NGINX_SOURCE
         --with-http_gzip_static_module --with-http_stub_status_module \
 		--add-module=$WORKHOME/ngx_cache_purge \
         --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake CFLAGS="-static" EXEEXT="-static" && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 cd $WORKHOME
 wget --no-check-certificate -N https://openresty.org/download/openresty-1.13.6.2.tar.gz && \
@@ -275,15 +275,15 @@ cd openresty-1.13.6.2 && \
         --with-openssl=$WORKHOME/$OPENSSL_VERSION \
         --with-file-aio  --with-http_sub_module --with-http_gzip_static_module \
 		--with-http_auth_request_module --with-http_v2_module \
-        --http-client-body-temp-path=/usr/local/webserver/nginx/client_temp \
-        --http-proxy-temp-path=/usr/local/webserver/nginx/proxy_temp \
-        --http-fastcgi-temp-path=/usr/local/webserver/nginx/fastcgi_temp \
-        --http-uwsgi-temp-path=/usr/local/webserver/nginx/uwsgi_temp \
-        --http-scgi-temp-path=/usr/local/webserver/nginx/scgi_temp \
-        --modules-path=/usr/local/webserver/nginx/modules \
+        --http-client-body-temp-path=/usr/local/webserver/openresty/nginx/client_temp \
+        --http-proxy-temp-path=/usr/local/webserver/openresty/nginx/proxy_temp \
+        --http-fastcgi-temp-path=/usr/local/webserver/openresty/nginx/fastcgi_temp \
+        --http-uwsgi-temp-path=/usr/local/webserver/openresty/nginx/uwsgi_temp \
+        --http-scgi-temp-path=/usr/local/webserver/openresty/nginx/scgi_temp \
+        --modules-path=/usr/local/webserver/openresty/nginx/modules \
 		--add-module=$WORKHOME/ngx_cache_purge \
         --with-http_stub_status_module --add-module=$WORKHOME/ngx_http_geoip2_module && \
-gmake CFLAGS="-static" EXEEXT="-static" && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
+gmake && sudo gmake DESTDIR=$DESTDIR install && sudo gmake install clean
 
 ##############################################
 ##這裡先跳去準備安裝passenger，等一下會順便裝好nginx
@@ -357,7 +357,7 @@ wget --no-check-certificate -N http://www.memcached.org/files/memcached-1.5.12.t
 tar zxvf memcached-1.5.12.tar.gz
 cd memcached-1.5.12
 ./configure --prefix=/usr/local/webserver/memcached && \
-make CFLAGS="-static" EXEEXT="-static" && \
+make CPPFLAGS="-static" && \
 sudo make DESTDIR=$DESTDIR install && sudo make install clean
 
 #############################################
@@ -382,7 +382,10 @@ cd php-$PHP_VERSION && \
 --localstatedir=/usr/local/webserver/php/var \
 --datadir=/usr/local/webserver/php/share/php \
 --mandir=/usr/local/webserver/php/share/man \
---with-mysql=mysqlnd --with-mysqli=mysqlnd \
+--with-freetype-dir \
+--with-jpeg-dir \
+--with-png-dir \
+--with-mysqli=mysqlnd \
 --with-pdo-mysql=mysqlnd --with-iconv --with-freetype-dir \
 --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr \
 --enable-xml --disable-rpath --enable-bcmath --with-gettext \
@@ -392,8 +395,8 @@ cd php-$PHP_VERSION && \
 --enable-mbstring --with-mcrypt  --with-gd --enable-gd-native-ttf \
 --with-openssl --with-mhash --enable-pcntl --enable-sockets \
 --with-ldap --with-libdir=lib64 --with-ldap-sasl --with-xmlrpc \
---enable-zip --with-bz2 --enable-soap && \
-sudo make CFLAGS="-static" EXEEXT="-static" && sudo make INSTALL_ROOT=$DESTDIR install && \
+--enable-zip --with-bz2 --enable-soap --enable-static && \
+sudo make && sudo make INSTALL_ROOT=$DESTDIR install && \
 sudo make install && \
 sudo make clean
 
@@ -481,7 +484,7 @@ wget --no-check-certificate -N https://github.com/gearman/gearmand/releases/down
 tar zxvf gearmand-1.1.18.tar.gz && \
 cd gearmand-1.1.18 && \
 ./configure --prefix=/usr/local/webserver/gearmand --with-mysql=/usr/local/webserver/mysql/bin/mysql_config && \
-make CFLAGS="-static" EXEEXT="-static" && \
+make && \
 sudo make install && \
 sudo make DESTDIR=$DESTDIR install && \
 sudo make clean
@@ -518,9 +521,9 @@ cd $WORKHOME/ && \
 wget --no-check-certificate -N http://download.redis.io/releases/redis-4.0.12.tar.gz
 tar zxvf redis-4.0.12.tar.gz
 cd redis-4.0.12 && \
-make CFLAGS="-static" EXEEXT="-static" PREFIX=/usr/local/webserver/redis && \
-sudo make CFLAGS="-static" EXEEXT="-static" PREFIX=$DESTDIR/usr/local/webserver/redis install && \
-sudo make CFLAGS="-static" EXEEXT="-static" PREFIX=/usr/local/webserver/redis install && \
+make PREFIX=/usr/local/webserver/redis && \
+sudo make PREFIX=$DESTDIR/usr/local/webserver/redis install && \
+sudo make PREFIX=/usr/local/webserver/redis install && \
 sudo make clean
 
 
