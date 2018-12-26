@@ -132,6 +132,7 @@ cd $WORKHOME
 wget --no-check-certificate -N https://github.com/libevent/libevent/archive/release-1.4.15-stable.tar.gz
 tar zxvf release-1.4.15-stable.tar.gz
 cd libevent-release-1.4.15-stable
+./autogen.sh && \
 ./configure --prefix=/usr/local && \
 make && sudo make DESTDIR=${DESTDIR} install && sudo make install clean
 
