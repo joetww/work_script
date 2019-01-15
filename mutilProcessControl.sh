@@ -4,7 +4,7 @@
 # 其他發想參考
 # https://natelandau.com/boilerplate-shell-script-template/
 # https://github.com/natelandau/shell-scripts
-# bash mutilProcessControl.sh 2 2 3 4 12 12 11 2 4 5 2 6 32 3 7 18 10 21 23 24 25 27 20 31 32 36 35 2 8 9 11 23 34 26
+# bash mutilProcessControl.sh -c "sleep " $(for i in {1..40}; do echo $(( ( RANDOM % 10 )  + 1 )); done)
 
 scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 utilsLocation="${scriptPath}/lib/utils.sh" # Update this path to find the utilities.
