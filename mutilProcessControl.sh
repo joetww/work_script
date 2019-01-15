@@ -3,7 +3,7 @@
 
 # 其他發想參考
 # https://natelandau.com/boilerplate-shell-script-template/
-# bash s.sh 2 2 3 4 12 12 11 2 4 5 2 6 32 3 7 18 10 21 23 24 25 27 20 31 32 36 35 2 8 9 11 23 34 26
+# bash mutilProcessControl.sh 2 2 3 4 12 12 11 2 4 5 2 6 32 3 7 18 10 21 23 24 25 27 20 31 32 36 35 2 8 9 11 23 34 26
 
 
 # 允许的进程数;
