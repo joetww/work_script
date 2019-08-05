@@ -1,6 +1,7 @@
 #!/bin/bash
 
 [[ ":$PATH:" != *":/usr/local/webserver/mongodb/bin:"* ]] && PATH="/usr/local/webserver/mongodb/bin:${PATH}"
+useradd -d /home/mongod -u 503 -g 503 mongod
 
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel62-4.0.11.tgz && \
 tar zxvf mongodb-linux-x86_64-rhel62-4.0.11.tgz -C /usr/local/webserver && \
@@ -198,5 +199,7 @@ operationProfiling:
 
 EOD
 
+
+chmod a+x /etc/init.d.mongod
 chkconfig mongod on
 service mongod start
