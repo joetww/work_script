@@ -1,7 +1,8 @@
 #!/bin/bash
 
 [[ ":$PATH:" != *":/usr/local/webserver/mongodb/bin:"* ]] && PATH="/usr/local/webserver/mongodb/bin:${PATH}"
-useradd -d /home/mongod -u 503 -g 503 mongod
+groupadd -g 199 mongod
+useradd -d /home/mongod -u 199 -g 199 mongod
 
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel62-4.0.11.tgz && \
 tar zxvf mongodb-linux-x86_64-rhel62-4.0.11.tgz -C /usr/local/webserver && \
