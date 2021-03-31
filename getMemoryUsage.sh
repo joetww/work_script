@@ -1,4 +1,5 @@
 #!/bin/bash
+#RSS代表實體記憶體的使用量。但是這裡RSS的值，是包括shared memory的。
 
 PROCESSLIST="php-fpm nginx redis-server mysqld gearmand memcached php bash sh"
 
