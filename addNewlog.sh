@@ -10,7 +10,7 @@ cat <<"EOD" > /home/www/nginx/mainaccess.conf
 EOD
 
 grep -q 'include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf || \
-sed -ir '/error_log syslog:server=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+;/a \        include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf
+sed -i -r '/error_log syslog:server=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+;/a \        include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf
 perl -pi -e 's/\r\n/\n/g' /home/www/nginx/nginx-config.conf
 
 
