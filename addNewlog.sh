@@ -11,6 +11,8 @@ EOD
 
 grep -q 'include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf || \
 sed -i -r '/error_log syslog:server=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+;/a \        include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf
+grep -q 'include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf || \
+sed -i -r '/access_log\s+\/home\/www\/logs\/nginx\/access.log\s+json_combined;/a \    include /home/www/nginx/mainaccess.conf;' /home/www/nginx/nginx-config.conf
 perl -pi -e 's/\r\n/\n/g' /home/www/nginx/nginx-config.conf
 
 
