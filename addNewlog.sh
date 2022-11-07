@@ -41,7 +41,7 @@ cat <<"EOD" > /etc/logrotate.d/tengine
 EOD
 
 
-	
+test -d /home/www/logs/nginx && sudo chmod root:root /home/www/logs/nginx
 sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf -t && \
 sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf -s reload && \
 sleep 2 && \
