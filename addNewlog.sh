@@ -18,7 +18,7 @@ perl -pi -e 's/\r\n/\n/g' /home/www/nginx/nginx-config.conf
 
 test \! -f /etc/logrotate.d/tengine && \
 cat <<"EOD" > /etc/logrotate.d/tengine
-/usr/local/nginx/logs/*.log /home/www/logs/nginx/*.log{
+/usr/local/nginx/logs/*.log /home/www/logs/nginx/*.log {
   dateext
   dateformat -%Y%m%d%H_%s
   compress
@@ -39,6 +39,17 @@ cat <<"EOD" > /etc/logrotate.d/tengine
   endscript
 }
 EOD
+
+#修正tengine的logrotate
+grep -q hourly /etc/logrotate.d/tengine || \
+sed -i '/dateext/i \  hourly' /etc/logrotate.d/tengine
+grep -q hourly /etc/logrotate.d/tengine || \
+sed -i '/dateformat/i \  hourly' /etc/logrotate.d/tengine
+grep -q hourly /etc/logrotate.d/tengine || \
+sed -i '/compress/i \  hourly' /etc/logrotate.d/tengine
+
+#改logrotate每小時執行
+test -f /etc/cron.daily/logrotate && test \! -f /etc/cron.hourly/logrotate && mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 
 
 test -d /home/www/logs/nginx && sudo chmod root:root /home/www/logs/nginx
