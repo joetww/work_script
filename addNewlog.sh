@@ -50,8 +50,23 @@ sed -i '/dateformat/i \  hourly' /etc/logrotate.d/tengine
 grep -q hourly /etc/logrotate.d/tengine || \
 sed -i '/compress/i \  hourly' /etc/logrotate.d/tengine
 
+cat /etc/logrotate.d/tengine | grep -v ^# | grep -qP '^\s+su.*' && \
+sudo sed -i 's/\(su\s\+.*\)/su root www-data/g' /etc/logrotate.d/tengine
+
+cat /etc/logrotate.d/tengine | grep -v ^# | grep -qP '^\s+su.*' || \
+sudo sed -i '/missingok/a \  su root www-data' /etc/logrotate.d/tengine
+
+cat /etc/logrotate.d/tengine | grep -v ^# | grep -qP '^\s+create.*' && \
+sudo sed -i 's/\(create\s\+.*\)/create 644 root www-data/g' /etc/logrotate.d/tengine
+
+cat /etc/logrotate.d/tengine | grep -v ^# | grep -qP '^\s+create.*' || \
+sudo sed -i '/sharedscripts/i \  create 644 root www-data' /etc/logrotate.d/tengine
+
 #改logrotate每小時執行
-test -f /etc/logrotate.d/tengine && test -f /etc/cron.daily/logrotate && test \! -f /etc/cron.hourly/logrotate && mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+test -f /etc/logrotate.d/tengine && \
+test -f /etc/cron.daily/logrotate && \
+test \! -f /etc/cron.hourly/logrotate && \
+mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 
 
 test -d /home/www/logs/nginx && sudo chmod root:root /home/www/logs/nginx
