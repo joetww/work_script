@@ -30,7 +30,8 @@ cat <<"EOD" > /etc/logrotate.d/tengine
   minsize 100M
   rotate 120
   missingok
-  create 644 www-data root
+  su root www-data
+  create 644 root www-data
   sharedscripts
   postrotate
     [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
