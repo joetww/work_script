@@ -49,7 +49,7 @@ grep -q hourly /etc/logrotate.d/tengine || \
 sed -i '/compress/i \  hourly' /etc/logrotate.d/tengine
 
 #改logrotate每小時執行
-test -f /etc/cron.daily/logrotate && test \! -f /etc/cron.hourly/logrotate && mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
+test -f /etc/logrotate.d/tengine && test -f /etc/cron.daily/logrotate && test \! -f /etc/cron.hourly/logrotate && mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate
 
 
 test -d /home/www/logs/nginx && sudo chmod root:root /home/www/logs/nginx
