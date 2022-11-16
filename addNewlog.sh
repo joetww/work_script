@@ -19,6 +19,7 @@ perl -pi -e 's/\r\n/\n/g' /home/www/nginx/nginx-config.conf
 test \! -f /etc/logrotate.d/tengine && \
 cat <<"EOD" > /etc/logrotate.d/tengine
 /usr/local/nginx/logs/*.log /home/www/logs/nginx/*.log {
+  hourly
   dateext
   dateformat -%Y%m%d%H_%s
   compress
